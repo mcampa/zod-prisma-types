@@ -12,11 +12,10 @@ export const getPrismaClientGeneratorConfig = (options: GeneratorOptions) => {
   const isPrismaClientGenerator =
     prismaClientOptions?.provider.value === 'prisma-client';
 
-  const prismaLibraryPath = prismaClientOptions?.previewFeatures.includes(
-    'queryCompiler',
-  )
-    ? '@prisma/client/runtime/client'
-    : '@prisma/client/runtime/library';
+  const prismaLibraryPath =
+    prismaClientOptions?.config?.['engineType'] === 'client'
+      ? '@prisma/client/runtime/client'
+      : '@prisma/client/runtime/library';
 
   const baseOptions = {
     isPrismaClientGenerator,

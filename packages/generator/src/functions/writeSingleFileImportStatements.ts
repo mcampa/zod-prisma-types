@@ -11,12 +11,8 @@ export const writeSingleFileImportStatements: WriteStatements = ({
   writer,
   writeImport,
 }) => {
-  const {
-    prismaClientPath,
-    prismaLibraryPath,
-    decimalJSInstalled,
-    isPrismaClientGenerator,
-  } = getConfig();
+  const { prismaClientPath, prismaLibraryPath, isPrismaClientGenerator } =
+    getConfig();
 
   const dmmf = getExtendedDMMF();
 
@@ -25,23 +21,35 @@ export const writeSingleFileImportStatements: WriteStatements = ({
   // If using the "prisma-client" compiler, we can import directly from the
   // runtime library to avoid importing the entire client.
   if (isPrismaClientGenerator) {
+    const prismaBrowserRuntimePath = '@prisma/client/runtime/index-browser';
     const namesToImport = [];
+    const namesToImportFromPrismaClient = [];
 
     if (dmmf.schema.hasJsonTypes) {
-      namesToImport.push('JsonValue');
-      namesToImport.push('InputJsonValue');
+      namesToImportFromPrismaClient.push('type JsonValue');
+      namesToImportFromPrismaClient.push('type InputJsonValue');
       namesToImport.push('objectEnumValues');
     }
 
     if (dmmf.schema.hasDecimalTypes) {
       namesToImport.push('Decimal as PrismaDecimal');
-      namesToImport.push('DecimalJsLike');
+      namesToImportFromPrismaClient.push('type DecimalJsLike');
+    }
+
+    if (namesToImportFromPrismaClient.length > 0) {
+      writeImport(
+        `{ ${namesToImportFromPrismaClient.join(', ')} }`,
+        `${prismaLibraryPath}`,
+      );
     }
 
     if (namesToImport.length > 0) {
-      writeImport(`{ ${namesToImport.join(', ')} }`, `${prismaLibraryPath}`);
+      writeImport(
+        `{ ${namesToImport.join(', ')} }`,
+        `${prismaBrowserRuntimePath}`,
+      );
     }
-    writeImport(`type { Prisma }`, `${prismaClientPath}`);
+    // writeImport(`type { Prisma }`, `${prismaClientPath}`);
   } else {
     // Prisma should primarily be imported as a type, but if there are json fields,
     // we need to import the whole namespace because the null transformation
@@ -53,9 +61,9 @@ export const writeSingleFileImportStatements: WriteStatements = ({
     }
   }
 
-  if (dmmf.schema.hasDecimalTypes && decimalJSInstalled) {
-    writeImport(`Decimal`, 'decimal.js');
-  }
+  // if (dmmf.schema.hasDecimalTypes && decimalJSInstalled) {
+  //   writeImport(`Decimal`, 'decimal.js');
+  // }
 
   if (dmmf.customImports) {
     dmmf.customImports.forEach((statement) => {

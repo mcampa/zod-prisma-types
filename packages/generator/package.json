@@ -1,11 +1,12 @@
 {
-  "name": "zod-prisma-types",
-  "version": "3.3.5",
-  "description": "Generates zod schemas from Prisma models with advanced validation",
-  "author": "Chris Hörmann",
+  "name": "zod-prisma-schemas",
+  "version": "0.0.1",
+  "description": "Generates zod schemas from Prisma models with advanced validation (Fork of zod-prisma-types)",
+  "author": "Mario Campa",
   "license": "MIT",
   "main": "dist/generator.js",
   "types": "dist/generator.d.ts",
+  "private": false,
   "keywords": [
     "zod",
     "prisma",
