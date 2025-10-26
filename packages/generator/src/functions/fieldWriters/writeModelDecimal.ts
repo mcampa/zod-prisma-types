@@ -9,7 +9,7 @@ export const writeDecimal = ({
   writer
     .conditionalWrite(field.omitInModel(), '// omitted: ')
     .write(`${field.formattedNames.original}: `)
-    .write(`DecimalJsLikeSchema,`);
+    .write(`DecimalJsLikeSchema`);
 
   writeFieldAdditions({ writer, field, writeOptionalDefaults });
 };
