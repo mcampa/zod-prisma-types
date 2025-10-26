@@ -14,7 +14,9 @@ export const parseGeneratorConfig = (generatorOptions: GeneratorOptions) => {
     ...generatorOptions.generator.config,
     ...getPrismaClientGeneratorConfig(generatorOptions),
     ...getPrismaClientProvider(generatorOptions),
-    prismaVersion: getPackageVersion('@prisma/client'),
+    prismaVersion: getPackageVersion('@prisma/client', {
+      fallbackVersion: { major: 6, minor: 18, patch: 0 },
+    }),
 
     // HACKY !!!
     // default to v4.0.0 because every new project should use zod v4 now bc. I sayyyyy soooooooo!!!

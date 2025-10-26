@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { getConfig } from '../../config';
 import { WriteTypeFunction, WriteTypeOptions } from '../../types';
 
@@ -28,12 +27,7 @@ export const writeSpecialType: WriteTypeFunction<WriteTypeOptions> = (
 ) => {
   if (!inputType.isSpecialType()) return;
 
-  const {
-    addInputTypeValidation,
-    decimalJSInstalled,
-    isPrismaClientGenerator,
-    prismaVersion,
-  } = getConfig();
+  const { addInputTypeValidation, prismaVersion } = getConfig();
 
   if (zodCustomValidatorString && addInputTypeValidation) {
     return writer
@@ -50,15 +44,6 @@ export const writeSpecialType: WriteTypeFunction<WriteTypeOptions> = (
         .write(`z.union([`)
         .write(`z.number().array(),`)
         .write(`z.string().array(),`)
-        .conditionalWrite(decimalJSInstalled, `z.instanceof(Decimal).array(),`)
-        .conditionalWrite(
-          isPrismaClientGenerator,
-          `z.instanceof(PrismaDecimal).array(),`,
-        )
-        .conditionalWrite(
-          !isPrismaClientGenerator,
-          `z.instanceof(Prisma.Decimal).array(),`,
-        )
         .write(`DecimalJsLikeSchema.array(),`)
         .write(`]`)
         .conditionalWrite(!!zodCustomErrors, `, ${zodCustomErrors!}`)
@@ -78,12 +63,6 @@ export const writeSpecialType: WriteTypeFunction<WriteTypeOptions> = (
       .write(`z.union([`)
       .write(`z.number(),`)
       .write(`z.string(),`)
-      .conditionalWrite(decimalJSInstalled, `z.instanceof(Decimal),`)
-      .conditionalWrite(isPrismaClientGenerator, `z.instanceof(PrismaDecimal),`)
-      .conditionalWrite(
-        !isPrismaClientGenerator,
-        `z.instanceof(Prisma.Decimal),`,
-      )
       .write(`DecimalJsLikeSchema,`)
       .write(`]`)
       .conditionalWrite(!!zodCustomErrors, `, ${zodCustomErrors!}`)
@@ -96,15 +75,12 @@ export const writeSpecialType: WriteTypeFunction<WriteTypeOptions> = (
   }
 
   if (inputType.isJsonType) {
-    return (
-      writer
-        .write(`InputJsonValueSchema`)
-        // .conditionalWrite(!!zodCustomValidatorString, zodCustomValidatorString!)
-        .conditionalWrite(inputType.isList, `.array()`)
-        .conditionalWrite(isOptional, `.optional()`)
-        .conditionalWrite(isNullable, `.nullable()`)
-        .conditionalWrite(writeComma, `,`)
-    );
+    return writer
+      .write(`InputJsonValueSchema`)
+      .conditionalWrite(inputType.isList, `.array()`)
+      .conditionalWrite(isOptional, `.optional()`)
+      .conditionalWrite(isNullable, `.nullable()`)
+      .conditionalWrite(writeComma, `,`);
   }
 
   if (inputType.isBytesType) {

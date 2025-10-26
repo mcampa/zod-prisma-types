@@ -32,7 +32,6 @@ export const writeSingleFileImportStatements: WriteStatements = ({
     }
 
     if (dmmf.schema.hasDecimalTypes) {
-      namesToImport.push('Decimal as PrismaDecimal');
       namesToImportFromPrismaClient.push('type DecimalJsLike');
     }
 
@@ -49,7 +48,6 @@ export const writeSingleFileImportStatements: WriteStatements = ({
         `${prismaBrowserRuntimePath}`,
       );
     }
-    // writeImport(`type { Prisma }`, `${prismaClientPath}`);
   } else {
     // Prisma should primarily be imported as a type, but if there are json fields,
     // we need to import the whole namespace because the null transformation
@@ -60,10 +58,6 @@ export const writeSingleFileImportStatements: WriteStatements = ({
       writeImport(`type { Prisma }`, `${prismaClientPath}`);
     }
   }
-
-  // if (dmmf.schema.hasDecimalTypes && decimalJSInstalled) {
-  //   writeImport(`Decimal`, 'decimal.js');
-  // }
 
   if (dmmf.customImports) {
     dmmf.customImports.forEach((statement) => {
