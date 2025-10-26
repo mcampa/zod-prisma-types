@@ -34,7 +34,7 @@ export const DEFAULT_GENERATOR_CONFIG: GeneratorConfig = {
   },
   prismaVersion: {
     major: 6,
-    minor: 0,
+    minor: 18,
     patch: 0,
   },
 };
