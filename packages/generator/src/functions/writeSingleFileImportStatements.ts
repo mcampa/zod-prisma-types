@@ -32,6 +32,7 @@ export const writeSingleFileImportStatements: WriteStatements = ({
     }
 
     if (dmmf.schema.hasDecimalTypes) {
+      namesToImportFromPrismaClient.push('type DecimalJsLike');
       writeImport('{ Decimal }', 'decimal.js');
     }
 
