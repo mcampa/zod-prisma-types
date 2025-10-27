@@ -6,39 +6,21 @@ export const writeDecimalJsLike = ({
   fileWriter: { writer, writeImport },
   getSingleFileContent = false,
 }: ContentWriterOptions) => {
-  const {
-    useMultipleFiles,
-    prismaClientPath,
-    prismaLibraryPath,
-    isPrismaClientGenerator,
-  } = getConfig();
+  const { useMultipleFiles } = getConfig();
 
   if (useMultipleFiles && !getSingleFileContent) {
     writeZodImport(writeImport);
-    if (isPrismaClientGenerator) {
-      writeImport('type { DecimalJsLike }', `${prismaLibraryPath}`);
-    } else {
-      writeImport('type { Prisma }', `${prismaClientPath}`);
-    }
+    writeImport('{ Decimal }', 'decimal.js');
   }
-
-  const decimalJsLikeTypeName = isPrismaClientGenerator
-    ? 'DecimalJsLike'
-    : 'Prisma.DecimalJsLike';
-
   writer
     .blankLine()
-    .writeLine(
-      `export const DecimalJsLikeSchema: z.ZodType<${decimalJsLikeTypeName}> = z.object({`,
-    )
+    .writeLine(`export const DecimalJsLikeSchema = z.preprocess((v, c) => {`)
     .withIndentationLevel(1, () => {
-      writer
-        .writeLine(`d: z.array(z.number()),`)
-        .writeLine(`e: z.number(),`)
-        .writeLine(`s: z.number(),`)
-        .writeLine(`toFixed: z.any(),`);
+      writer.writeLine(
+        `return Decimal.isDecimal(v) && !(v instanceof Decimal) ? new Decimal(v) : v;`,
+      );
     })
-    .writeLine(`})`);
+    .writeLine(`, z.instanceof(Decimal));`);
 
   if (useMultipleFiles && !getSingleFileContent) {
     writer.blankLine().writeLine(`export default DecimalJsLikeSchema;`);
