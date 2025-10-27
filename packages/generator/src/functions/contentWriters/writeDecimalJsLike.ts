@@ -20,7 +20,7 @@ export const writeDecimalJsLike = ({
         `return Decimal.isDecimal(v) && !(v instanceof Decimal) ? new Decimal(v) : v;`,
       );
     })
-    .writeLine(`, z.instanceof(Decimal));`);
+    .writeLine(`}, z.instanceof(Decimal));`);
 
   if (useMultipleFiles && !getSingleFileContent) {
     writer.blankLine().writeLine(`export default DecimalJsLikeSchema;`);
