@@ -5,6 +5,7 @@ import { generateMultipleFiles } from './generateMultipleFiles';
 import { generateSingleFile } from './generateSingleFile';
 import { skipGenerator } from './utils';
 import { globalConfig } from './config/globalConfig';
+import packageJson from '../package.json';
 
 /////////////////////////////////////////
 // GENERATOR
@@ -14,7 +15,8 @@ generatorHandler({
   onManifest: () => {
     return {
       defaultOutput: './generated/zod',
-      prettyName: 'Zod Prisma Types',
+      prettyName: 'Zod Prisma Schemas',
+      version: packageJson.version,
     };
   },
   // eslint-disable-next-line @typescript-eslint/require-await
