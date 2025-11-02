@@ -5,6 +5,7 @@ export * from './writeMultiFileInputTypeFiles';
 export * from './writeMultiFileModelFiles';
 export * from './writeSingleFileArgTypeStatements';
 export * from './writeSingleFileEnumStatements';
+export * from './writeSingleFileHeading';
 export * from './writeSingleFileHelperStatements';
 export * from './writeSingleFileImportStatements';
 export * from './writeSingleFileIncludeSelectStatements';

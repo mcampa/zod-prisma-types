@@ -1,6 +1,6 @@
 import { it, expect, describe, afterEach, beforeEach, vi } from 'vitest';
-import type CodeBlockWriter from 'code-block-writer';
 import type DMMF from '@prisma/dmmf';
+import type { CreateFileOptions } from '../../classes/fileWriter';
 import { writeSingleFileImportStatements } from '../writeSingleFileImportStatements';
 import { globalConfig } from '../../config';
 import { DEFAULT_GENERATOR_CONFIG } from '../../__tests__/setup';
@@ -195,9 +195,9 @@ function createMockDMMF(options: {
 /////////////////////////////////////////////
 
 describe('writeSingleFileImportStatements', () => {
-  let mockWriter: CodeBlockWriter;
-  let mockWriteImport: ReturnType<typeof vi.fn>;
-  let importCalls: Array<{ importName: string; importPath: string }>;
+  let mockFileOptions: CreateFileOptions;
+  let importCalls: { importName: string; importPath: string }[];
+  let writeLineCalls: string[];
 
   beforeEach(() => {
     // Reset global state
@@ -208,16 +208,26 @@ describe('writeSingleFileImportStatements', () => {
       ExtendedDMMFSingleton.reset();
     }
 
-    // Setup mock writer
-    mockWriter = {
-      writeLine: vi.fn(),
-    } as unknown as CodeBlockWriter;
-
-    // Track import calls
+    // Track calls
     importCalls = [];
-    mockWriteImport = vi.fn((importName: string, importPath: string) => {
-      importCalls.push({ importName, importPath });
-    });
+    writeLineCalls = [];
+
+    // Setup mock file options
+    mockFileOptions = {
+      writer: {
+        writeLine: vi.fn((line: string) => {
+          writeLineCalls.push(line);
+        }),
+      },
+      writeImport: vi.fn((importName: string, importPath: string) => {
+        importCalls.push({ importName, importPath });
+      }),
+      writeImportSet: vi.fn(),
+      writeExport: vi.fn(),
+      writeImports: vi.fn(),
+      writeHeading: vi.fn(),
+      writeJSDoc: vi.fn(),
+    } as unknown as CreateFileOptions;
   });
 
   afterEach(() => {
@@ -250,10 +260,7 @@ describe('writeSingleFileImportStatements', () => {
       ExtendedDMMFSingleton.initialize(mockDMMF);
 
       // Execute
-      writeSingleFileImportStatements({
-        writer: mockWriter,
-        writeImport: mockWriteImport,
-      } as any);
+      writeSingleFileImportStatements(mockFileOptions);
 
       // Verify
       expect(importCalls).toHaveLength(2);
@@ -283,10 +290,7 @@ describe('writeSingleFileImportStatements', () => {
       ExtendedDMMFSingleton.initialize(mockDMMF);
 
       // Execute
-      writeSingleFileImportStatements({
-        writer: mockWriter,
-        writeImport: mockWriteImport,
-      } as any);
+      writeSingleFileImportStatements(mockFileOptions);
 
       // Verify
       expect(importCalls).toHaveLength(2);
@@ -316,10 +320,7 @@ describe('writeSingleFileImportStatements', () => {
       ExtendedDMMFSingleton.initialize(mockDMMF);
 
       // Execute
-      writeSingleFileImportStatements({
-        writer: mockWriter,
-        writeImport: mockWriteImport,
-      } as any);
+      writeSingleFileImportStatements(mockFileOptions);
 
       // Verify
       expect(importCalls).toHaveLength(2);
@@ -349,10 +350,7 @@ describe('writeSingleFileImportStatements', () => {
       ExtendedDMMFSingleton.initialize(mockDMMF);
 
       // Execute
-      writeSingleFileImportStatements({
-        writer: mockWriter,
-        writeImport: mockWriteImport,
-      } as any);
+      writeSingleFileImportStatements(mockFileOptions);
 
       // Verify
       expect(importCalls).toHaveLength(2);
@@ -382,10 +380,7 @@ describe('writeSingleFileImportStatements', () => {
       ExtendedDMMFSingleton.initialize(mockDMMF);
 
       // Execute
-      writeSingleFileImportStatements({
-        writer: mockWriter,
-        writeImport: mockWriteImport,
-      } as any);
+      writeSingleFileImportStatements(mockFileOptions);
 
       // Verify
       expect(importCalls[1]).toEqual({
@@ -416,10 +411,7 @@ describe('writeSingleFileImportStatements', () => {
       ExtendedDMMFSingleton.initialize(mockDMMF);
 
       // Execute
-      writeSingleFileImportStatements({
-        writer: mockWriter,
-        writeImport: mockWriteImport,
-      } as any);
+      writeSingleFileImportStatements(mockFileOptions);
 
       // Verify - only zod import
       expect(importCalls).toHaveLength(1);
@@ -445,10 +437,7 @@ describe('writeSingleFileImportStatements', () => {
       ExtendedDMMFSingleton.initialize(mockDMMF);
 
       // Execute
-      writeSingleFileImportStatements({
-        writer: mockWriter,
-        writeImport: mockWriteImport,
-      } as any);
+      writeSingleFileImportStatements(mockFileOptions);
 
       // Verify
       expect(importCalls).toHaveLength(3);
@@ -482,13 +471,10 @@ describe('writeSingleFileImportStatements', () => {
       ExtendedDMMFSingleton.initialize(mockDMMF);
 
       // Execute
-      writeSingleFileImportStatements({
-        writer: mockWriter,
-        writeImport: mockWriteImport,
-      } as any);
+      writeSingleFileImportStatements(mockFileOptions);
 
       // Verify
-      expect(importCalls).toHaveLength(2);
+      expect(importCalls).toHaveLength(3);
       expect(importCalls[0]).toEqual({
         importName: '{ z }',
         importPath: 'zod',
@@ -496,6 +482,10 @@ describe('writeSingleFileImportStatements', () => {
       expect(importCalls[1]).toEqual({
         importName: '{ Decimal }',
         importPath: 'decimal.js',
+      });
+      expect(importCalls[2]).toEqual({
+        importName: '{ type DecimalJsLike }',
+        importPath: '@prisma/client/runtime/library',
       });
     });
 
@@ -515,10 +505,7 @@ describe('writeSingleFileImportStatements', () => {
       ExtendedDMMFSingleton.initialize(mockDMMF);
 
       // Execute
-      writeSingleFileImportStatements({
-        writer: mockWriter,
-        writeImport: mockWriteImport,
-      } as any);
+      writeSingleFileImportStatements(mockFileOptions);
 
       // Verify
       expect(importCalls).toHaveLength(4);
@@ -531,7 +518,8 @@ describe('writeSingleFileImportStatements', () => {
         importPath: 'decimal.js',
       });
       expect(importCalls[2]).toEqual({
-        importName: '{ type JsonValue, type InputJsonValue }',
+        importName:
+          '{ type JsonValue, type InputJsonValue, type DecimalJsLike }',
         importPath: '@prisma/client/runtime/library',
       });
       expect(importCalls[3]).toEqual({
@@ -556,10 +544,7 @@ describe('writeSingleFileImportStatements', () => {
       ExtendedDMMFSingleton.initialize(mockDMMF);
 
       // Execute
-      writeSingleFileImportStatements({
-        writer: mockWriter,
-        writeImport: mockWriteImport,
-      } as any);
+      writeSingleFileImportStatements(mockFileOptions);
 
       // Verify
       expect(importCalls[1]).toEqual({
@@ -593,17 +578,14 @@ describe('writeSingleFileImportStatements', () => {
       ExtendedDMMFSingleton.initialize(mockDMMF);
 
       // Execute
-      writeSingleFileImportStatements({
-        writer: mockWriter,
-        writeImport: mockWriteImport,
-      } as any);
+      writeSingleFileImportStatements(mockFileOptions);
 
       // Verify
-      expect(mockWriter.writeLine).toHaveBeenCalledTimes(2);
-      expect(mockWriter.writeLine).toHaveBeenCalledWith(
+      expect(mockFileOptions.writer.writeLine).toHaveBeenCalledTimes(2);
+      expect(mockFileOptions.writer.writeLine).toHaveBeenCalledWith(
         "import { myFunction } from '../../../../utils/myFunction';",
       );
-      expect(mockWriter.writeLine).toHaveBeenCalledWith(
+      expect(mockFileOptions.writer.writeLine).toHaveBeenCalledWith(
         "import { anotherFunction } from '../helpers';",
       );
     });
@@ -624,15 +606,12 @@ describe('writeSingleFileImportStatements', () => {
       ExtendedDMMFSingleton.initialize(mockDMMF);
 
       // Execute
-      writeSingleFileImportStatements({
-        writer: mockWriter,
-        writeImport: mockWriteImport,
-      } as any);
+      writeSingleFileImportStatements(mockFileOptions);
 
       // Verify
       expect(importCalls).toHaveLength(2); // zod + Prisma
-      expect(mockWriter.writeLine).toHaveBeenCalledTimes(1);
-      expect(mockWriter.writeLine).toHaveBeenCalledWith(
+      expect(mockFileOptions.writer.writeLine).toHaveBeenCalledTimes(1);
+      expect(mockFileOptions.writer.writeLine).toHaveBeenCalledWith(
         "import { validator } from './validators';",
       );
     });
@@ -653,13 +632,10 @@ describe('writeSingleFileImportStatements', () => {
       ExtendedDMMFSingleton.initialize(mockDMMF);
 
       // Execute
-      writeSingleFileImportStatements({
-        writer: mockWriter,
-        writeImport: mockWriteImport,
-      } as any);
+      writeSingleFileImportStatements(mockFileOptions);
 
       // Verify - custom imports not written
-      expect(mockWriter.writeLine).not.toHaveBeenCalled();
+      expect(mockFileOptions.writer.writeLine).not.toHaveBeenCalled();
     });
 
     it('should handle null custom imports', () => {
@@ -677,13 +653,10 @@ describe('writeSingleFileImportStatements', () => {
       ExtendedDMMFSingleton.initialize(mockDMMF);
 
       // Execute
-      writeSingleFileImportStatements({
-        writer: mockWriter,
-        writeImport: mockWriteImport,
-      } as any);
+      writeSingleFileImportStatements(mockFileOptions);
 
       // Verify - custom imports not written
-      expect(mockWriter.writeLine).not.toHaveBeenCalled();
+      expect(mockFileOptions.writer.writeLine).not.toHaveBeenCalled();
     });
   });
 
@@ -709,10 +682,7 @@ describe('writeSingleFileImportStatements', () => {
       ExtendedDMMFSingleton.initialize(mockDMMF);
 
       // Execute
-      writeSingleFileImportStatements({
-        writer: mockWriter,
-        writeImport: mockWriteImport,
-      } as any);
+      writeSingleFileImportStatements(mockFileOptions);
 
       // Verify all imports
       expect(importCalls).toHaveLength(4);
@@ -722,7 +692,7 @@ describe('writeSingleFileImportStatements', () => {
       expect(importCalls[3].importPath).toBe(
         '@prisma/client/runtime/index-browser',
       );
-      expect(mockWriter.writeLine).toHaveBeenCalledWith(
+      expect(mockFileOptions.writer.writeLine).toHaveBeenCalledWith(
         "import { helper } from './helper';",
       );
     });
@@ -747,10 +717,7 @@ describe('writeSingleFileImportStatements', () => {
       ExtendedDMMFSingleton.initialize(mockDMMF);
 
       // Execute
-      writeSingleFileImportStatements({
-        writer: mockWriter,
-        writeImport: mockWriteImport,
-      } as any);
+      writeSingleFileImportStatements(mockFileOptions);
 
       // Verify
       expect(importCalls).toHaveLength(2);
@@ -762,7 +729,7 @@ describe('writeSingleFileImportStatements', () => {
         importName: '{ Prisma }',
         importPath: '../prisma/client',
       });
-      expect(mockWriter.writeLine).toHaveBeenCalledTimes(2);
+      expect(mockFileOptions.writer.writeLine).toHaveBeenCalledTimes(2);
     });
   });
 });
