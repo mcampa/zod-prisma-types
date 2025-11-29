@@ -450,7 +450,7 @@ describe('writeSingleFileImportStatements', () => {
         importPath: '@prisma/client/runtime/library',
       });
       expect(importCalls[2]).toEqual({
-        importName: '{ objectEnumValues }',
+        importName: '{ DbNull, JsonNull, AnyNull }',
         importPath: '@prisma/client/runtime/index-browser',
       });
     });
@@ -523,7 +523,7 @@ describe('writeSingleFileImportStatements', () => {
         importPath: '@prisma/client/runtime/library',
       });
       expect(importCalls[3]).toEqual({
-        importName: '{ objectEnumValues }',
+        importName: '{ DbNull, JsonNull, AnyNull }',
         importPath: '@prisma/client/runtime/index-browser',
       });
     });

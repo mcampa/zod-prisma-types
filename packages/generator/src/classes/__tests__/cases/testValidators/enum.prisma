@@ -1,20 +1,18 @@
 generator client {
-    provider = "prisma-client-js"
+    provider = "prisma-client"
 }
 
 datasource db {
     provider = "postgresql"
-    url      = env("DATABASE_URL")
 }
 
 model EnumValidators {
-    id          Int  @id @default(autoincrement())
-    enum        TestEnum? /// @zod.enum.describe('test')
-    enumTwo     TestEnum ///@zod.custom.omit([input])
+    id      Int       @id @default(autoincrement())
+    enum    TestEnum? /// @zod.enum.describe('test')
+    enumTwo TestEnum ///@zod.custom.omit([input])
 }
 
 enum TestEnum {
     a
     b
 }
-

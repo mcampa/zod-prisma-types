@@ -28,7 +28,7 @@ export const writeSingleFileImportStatements: WriteStatements = ({
     if (dmmf.schema.hasJsonTypes) {
       namesToImportFromPrismaClient.push('type JsonValue');
       namesToImportFromPrismaClient.push('type InputJsonValue');
-      namesToImport.push('objectEnumValues');
+      namesToImport.push('DbNull, JsonNull, AnyNull');
     }
 
     if (dmmf.schema.hasDecimalTypes) {

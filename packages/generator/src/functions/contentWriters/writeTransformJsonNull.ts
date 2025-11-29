@@ -26,10 +26,6 @@ export const writeTransformJsonNull = ({
     ? 'JsonValue'
     : 'Prisma.JsonValue';
 
-  const nullTypesTypeName = isPrismaClientGenerator
-    ? 'typeof objectEnumValues.instances'
-    : 'Prisma.NullTypes';
-
   writer
     .newLine()
     .write(`export type NullableJsonInput = `)
@@ -37,20 +33,16 @@ export const writeTransformJsonNull = ({
     .write(`null | `)
     .write(`'JsonNull' | `)
     .write(`'DbNull' | `)
-    .write(`${nullTypesTypeName}.DbNull | `)
-    .write(`${nullTypesTypeName}.JsonNull;`)
+    .write(`DbNull | `)
+    .write(`JsonNull;`)
     .blankLine();
 
   writer
     .write(`export const transformJsonNull = (v?: NullableJsonInput) => `)
     .inlineBlock(() => {
       writer
-        .writeLine(
-          `if (!v || v === 'DbNull') return ${nullTypesTypeName}.DbNull;`,
-        )
-        .writeLine(
-          `if (v === 'JsonNull') return ${nullTypesTypeName}.JsonNull;`,
-        )
+        .writeLine(`if (!v || v === 'DbNull') return DbNull;`)
+        .writeLine(`if (v === 'JsonNull') return JsonNull;`)
         .writeLine(`return v;`);
     })
     .write(`;`);
