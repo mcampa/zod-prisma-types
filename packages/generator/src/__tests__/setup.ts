@@ -25,7 +25,7 @@ export const DEFAULT_GENERATOR_CONFIG: GeneratorConfig = {
   useTypeAssertions: false,
   useExactOptionalPropertyTypes: false,
   isPrismaClientGenerator: false,
-  prismaLibraryPath: '@prisma/client/runtime/library',
+  prismaLibraryPath: '@prisma/client/runtime/client',
   outputPath: './generated/zod',
   zodVersion: {
     major: 4,

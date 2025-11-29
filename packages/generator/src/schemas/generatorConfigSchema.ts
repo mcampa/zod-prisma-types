@@ -133,7 +133,7 @@ export const configSchema = z.object({
   prismaLibraryPath: z
     .string()
     .optional()
-    .default('@prisma/client/runtime/library'),
+    .default('@prisma/client/runtime/client'),
 
   /**
    * Path where the generated schemas will be stored.
