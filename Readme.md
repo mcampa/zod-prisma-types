@@ -31,8 +31,8 @@ Since I'm maintaining the generator in my spare time consider buying me a coffee
 
 ## Supported versions
 
-- Prisma: Currently this package supports Prisma versions 4.x - 6.x.
-- Zod: Currently this package supports Zod versions 3.x - 4.x.
+- Prisma: Currently this package supports Prisma version 7.x
+- Zod: Currently this package supports Zod version 4.x.
 
 > Make shure `zod` is installed as a `dependency` and not a `devDependency` for the generator to pick it up correctly!
 
