@@ -23,7 +23,7 @@ export const writePrismaEnum = (
         writer.write(`'${value}',`);
       });
       const jsonNullTypeName = isPrismaClientGenerator
-        ? 'objectEnumValues.instances.JsonNull'
+        ? 'JsonNull'
         : 'Prisma.JsonNull';
       writer.write(
         `]).transform((value) => (value === 'JsonNull' ? ${jsonNullTypeName} : value));`,
@@ -38,10 +38,10 @@ export const writePrismaEnum = (
         writer.write(`'${value}',`);
       });
       const jsonNullTypeName = isPrismaClientGenerator
-        ? 'objectEnumValues.instances.JsonNull'
+        ? 'JsonNull'
         : 'Prisma.JsonNull';
       const dbNullTypeName = isPrismaClientGenerator
-        ? 'objectEnumValues.instances.DbNull'
+        ? 'DbNull'
         : 'Prisma.DbNull';
       writer.write(
         `]).transform((value) => value === 'JsonNull' ? ${jsonNullTypeName} : value === 'DbNull' ? ${dbNullTypeName} : value);`,
@@ -55,13 +55,13 @@ export const writePrismaEnum = (
         writer.write(`'${value}',`);
       });
       const jsonNullTypeName = isPrismaClientGenerator
-        ? 'objectEnumValues.instances.JsonNull'
+        ? 'JsonNull'
         : 'Prisma.JsonNull';
       const dbNullTypeName = isPrismaClientGenerator
-        ? 'objectEnumValues.instances.DbNull'
+        ? 'DbNull'
         : 'Prisma.DbNull';
       const anyNullTypeName = isPrismaClientGenerator
-        ? 'objectEnumValues.instances.AnyNull'
+        ? 'AnyNull'
         : 'Prisma.AnyNull';
       writer.write(
         `]).transform((value) => value === 'JsonNull' ? ${jsonNullTypeName} : value === 'DbNull' ? ${dbNullTypeName} : value === 'AnyNull' ? ${anyNullTypeName} : value);`,
