@@ -20,7 +20,6 @@ export const DEFAULT_GENERATOR_CONFIG: GeneratorConfig = {
   decimalJSInstalled: true,
   useTypeAssertions: false,
   useExactOptionalPropertyTypes: false,
-  isPrismaClientGenerator: false,
   prismaLibraryPath: '@prisma/client/runtime/client',
   outputPath: './generated/zod',
   zodVersion: {

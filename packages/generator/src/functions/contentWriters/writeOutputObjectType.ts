@@ -1,7 +1,6 @@
 import { writeNonScalarType, writeScalarType, writeSpecialType } from '..';
-import { ExtendedDMMFSchemaField, getExtendedDMMF } from '../../classes';
+import { ExtendedDMMFSchemaField } from '../../classes';
 import { type ContentWriterOptions } from '../../types';
-import { writeSelect } from './writeSelect';
 import { getConfig } from '../../config';
 
 export const writeOutputObjectType = (

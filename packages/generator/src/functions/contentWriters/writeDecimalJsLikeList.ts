@@ -1,23 +1,12 @@
 import { type ContentWriterOptions } from '../../types';
-import { getConfig } from '../../config';
 
 export const writeDecimalJsLikeList = ({
   fileWriter: { writer },
 }: ContentWriterOptions) => {
-  const {
-    prismaClientPath,
-    prismaLibraryPath,
-    isPrismaClientGenerator,
-  } = getConfig();
-
-  const decimalJsLikeListTypeName = isPrismaClientGenerator
-    ? 'DecimalJsLike'
-    : 'Prisma.DecimalJsLike';
-
   writer
     .blankLine()
     .writeLine(
-      `export const DecimalJsLikeListSchema: z.ZodType<${decimalJsLikeListTypeName}[]> = z.object({`,
+      `export const DecimalJsLikeListSchema: z.ZodType<DecimalJsLike[]> = z.object({`,
     )
     .withIndentationLevel(1, () => {
       writer

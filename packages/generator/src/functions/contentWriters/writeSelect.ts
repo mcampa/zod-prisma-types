@@ -1,17 +1,12 @@
 import { ExtendedDMMFOutputType } from '../../classes';
 import { type ContentWriterOptions } from '../../types';
-import { writeZodImport } from '..';
 import { getConfig } from '../../config';
 
 export const writeSelect = (
-  {
-    fileWriter: { writer },
-  }: ContentWriterOptions,
+  { fileWriter: { writer } }: ContentWriterOptions,
   model: ExtendedDMMFOutputType,
 ) => {
-  const {
-    useExactOptionalPropertyTypes,
-  } = getConfig();
+  const { useExactOptionalPropertyTypes } = getConfig();
 
   writer
     .blankLine()

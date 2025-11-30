@@ -1,16 +1,13 @@
 import { ExtendedDMMFSchemaEnum } from '../../classes';
 import { type ContentWriterOptions } from '../../types';
-import { getConfig } from '../../config';
 
 export const writePrismaEnum = (
   { fileWriter: { writer } }: ContentWriterOptions,
   { useNativeEnum, values, name }: ExtendedDMMFSchemaEnum,
 ) => {
-  const { isPrismaClientGenerator } = getConfig();
-
   if (useNativeEnum) {
     writer.blankLine().write(`export const ${name}Schema = z.enum([`);
-    values.forEach((value, idx) => {
+    values.forEach((value: string, idx: number) => {
       const writeComma = idx !== values.length - 1;
 
       writer.write(`'${value}'${writeComma ? ',' : ''}`);
@@ -19,14 +16,11 @@ export const writePrismaEnum = (
   } else {
     if (name === 'JsonNullValueInput') {
       writer.blankLine().write(`export const ${name}Schema = z.enum([`);
-      values.forEach((value) => {
+      values.forEach((value: string) => {
         writer.write(`'${value}',`);
       });
-      const jsonNullTypeName = isPrismaClientGenerator
-        ? 'JsonNull'
-        : 'Prisma.JsonNull';
       writer.write(
-        `]).transform((value) => (value === 'JsonNull' ? ${jsonNullTypeName} : value));`,
+        `]).transform((value) => (value === 'JsonNull' ? JsonNull : value));`,
       );
 
       return;
@@ -34,44 +28,29 @@ export const writePrismaEnum = (
 
     if (name === 'NullableJsonNullValueInput') {
       writer.blankLine().write(`export const ${name}Schema = z.enum([`);
-      values.forEach((value) => {
+      values.forEach((value: string) => {
         writer.write(`'${value}',`);
       });
-      const jsonNullTypeName = isPrismaClientGenerator
-        ? 'JsonNull'
-        : 'Prisma.JsonNull';
-      const dbNullTypeName = isPrismaClientGenerator
-        ? 'DbNull'
-        : 'Prisma.DbNull';
       writer.write(
-        `]).transform((value) => value === 'JsonNull' ? ${jsonNullTypeName} : value === 'DbNull' ? ${dbNullTypeName} : value);`,
+        `]).transform((value) => value === 'JsonNull' ? JsonNull : value === 'DbNull' ? DbNull : value);`,
       );
 
       return;
     }
     if (name === 'JsonNullValueFilter') {
       writer.blankLine().write(`export const ${name}Schema = z.enum([`);
-      values.forEach((value) => {
+      values.forEach((value: string) => {
         writer.write(`'${value}',`);
       });
-      const jsonNullTypeName = isPrismaClientGenerator
-        ? 'JsonNull'
-        : 'Prisma.JsonNull';
-      const dbNullTypeName = isPrismaClientGenerator
-        ? 'DbNull'
-        : 'Prisma.DbNull';
-      const anyNullTypeName = isPrismaClientGenerator
-        ? 'AnyNull'
-        : 'Prisma.AnyNull';
       writer.write(
-        `]).transform((value) => value === 'JsonNull' ? ${jsonNullTypeName} : value === 'DbNull' ? ${dbNullTypeName} : value === 'AnyNull' ? ${anyNullTypeName} : value);`,
+        `]).transform((value) => value === 'JsonNull' ? JsonNull : value === 'DbNull' ? DbNull : value === 'AnyNull' ? AnyNull : value);`,
       );
 
       return;
     }
 
     writer.write(`export const ${name}Schema = z.enum([`);
-    values.forEach((value) => {
+    values.forEach((value: string) => {
       writer.write(`'${value}',`);
     });
     writer.write(`])`);

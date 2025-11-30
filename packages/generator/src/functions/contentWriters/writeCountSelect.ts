@@ -1,6 +1,5 @@
 import { ExtendedDMMFOutputType } from '../../classes';
 import { type ContentWriterOptions } from '../../types';
-import { writeZodImport } from '..';
 import { getConfig } from '../../config';
 
 /**
@@ -8,14 +7,10 @@ import { getConfig } from '../../config';
  * The _count field is only added when a realtion field is a list.
  */
 export const writeCountSelect = (
-  {
-    fileWriter: { writer },
-  }: ContentWriterOptions,
+  { fileWriter: { writer } }: ContentWriterOptions,
   model: ExtendedDMMFOutputType,
 ) => {
-  const {
-    useExactOptionalPropertyTypes,
-  } = getConfig();
+  const { useExactOptionalPropertyTypes } = getConfig();
 
   writer
     .blankLine()

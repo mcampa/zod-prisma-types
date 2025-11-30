@@ -1,26 +1,16 @@
-import { getConfig } from '../../config';
 import { writeModelFields } from '.';
 import { ExtendedDMMFModel, getExtendedDMMF } from '../../classes';
 import { type ContentWriterOptions } from '../../types';
 import { writeRelation } from '../fieldWriters';
-import { writeZodImport } from '..';
 
 //// NEEDS REFACTORING ////
 // This function is a mess and needs to be refactored into smaller, more manageable pieces.
 
 export const writeModelOrType = (
-  {
-    fileWriter: {
-      writer,
-      writeJSDoc,
-      writeHeading,
-    },
-  }: ContentWriterOptions,
+  { fileWriter: { writer, writeJSDoc, writeHeading } }: ContentWriterOptions,
   model: ExtendedDMMFModel,
 ) => {
-  const { createRelationValuesTypes } = getConfig();
   const dmmf = getExtendedDMMF();
-
 
   writer.blankLine();
 

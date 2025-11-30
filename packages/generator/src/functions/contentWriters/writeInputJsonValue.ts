@@ -1,23 +1,12 @@
 import { type ContentWriterOptions } from '../../types';
-import { getConfig } from '../../config';
 
 export const writeInputJsonValue = ({
   fileWriter: { writer },
 }: ContentWriterOptions) => {
-  const {
-    prismaClientPath,
-    prismaLibraryPath,
-    isPrismaClientGenerator,
-  } = getConfig();
-
-  const inputJsonValueTypeName = isPrismaClientGenerator
-    ? 'InputJsonValue'
-    : 'Prisma.InputJsonValue';
-
   writer
     .blankLine()
     .writeLine(
-      `export const InputJsonValueSchema: z.ZodType<${inputJsonValueTypeName}> = z.lazy(() =>`,
+      `export const InputJsonValueSchema: z.ZodType<InputJsonValue> = z.lazy(() =>`,
     )
     .withIndentationLevel(1, () => {
       writer

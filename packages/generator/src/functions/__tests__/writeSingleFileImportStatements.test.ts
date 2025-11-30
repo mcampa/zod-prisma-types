@@ -240,317 +240,158 @@ describe('writeSingleFileImportStatements', () => {
   });
 
   /////////////////////////////////////////////
-  // TESTS: isPrismaClientGenerator = false
+  // IMPORT STATEMENT TESTS
   /////////////////////////////////////////////
 
-  describe('when isPrismaClientGenerator is false', () => {
-    it('should write zod import and Prisma import as type when no JSON or Decimal types', () => {
-      // Setup config
-      globalConfig.initializeWithConfig({
-        ...DEFAULT_GENERATOR_CONFIG,
-        isPrismaClientGenerator: false,
-        prismaClientPath: '@prisma/client',
-      });
-
-      // Setup mock DMMF
-      const mockDMMF = createMockDMMF({
-        hasJsonTypes: false,
-        hasDecimalTypes: false,
-      });
-      ExtendedDMMFSingleton.initialize(mockDMMF);
-
-      // Execute
-      writeSingleFileImportStatements(mockFileOptions);
-
-      // Verify
-      expect(importCalls).toHaveLength(2);
-      expect(importCalls[0]).toEqual({
-        importName: '{ z }',
-        importPath: 'zod',
-      });
-      expect(importCalls[1]).toEqual({
-        importName: 'type { Prisma }',
-        importPath: '@prisma/client',
-      });
+  it('should write zod import only when no JSON or Decimal types', () => {
+    // Setup config
+    globalConfig.initializeWithConfig({
+      ...DEFAULT_GENERATOR_CONFIG,
+      prismaLibraryPath: '@prisma/client/runtime/client',
     });
 
-    it('should write Prisma import as value when JSON types are present', () => {
-      // Setup config
-      globalConfig.initializeWithConfig({
-        ...DEFAULT_GENERATOR_CONFIG,
-        isPrismaClientGenerator: false,
-        prismaClientPath: '@prisma/client',
-      });
-
-      // Setup mock DMMF with JSON types
-      const mockDMMF = createMockDMMF({
-        hasJsonTypes: true,
-        hasDecimalTypes: false,
-      });
-      ExtendedDMMFSingleton.initialize(mockDMMF);
-
-      // Execute
-      writeSingleFileImportStatements(mockFileOptions);
-
-      // Verify
-      expect(importCalls).toHaveLength(2);
-      expect(importCalls[0]).toEqual({
-        importName: '{ z }',
-        importPath: 'zod',
-      });
-      expect(importCalls[1]).toEqual({
-        importName: '{ Prisma }',
-        importPath: '@prisma/client',
-      });
+    // Setup mock DMMF
+    const mockDMMF = createMockDMMF({
+      hasJsonTypes: false,
+      hasDecimalTypes: false,
     });
+    ExtendedDMMFSingleton.initialize(mockDMMF);
 
-    it('should write Prisma import as value when Decimal types are present', () => {
-      // Setup config
-      globalConfig.initializeWithConfig({
-        ...DEFAULT_GENERATOR_CONFIG,
-        isPrismaClientGenerator: false,
-        prismaClientPath: '@prisma/client',
-      });
+    // Execute
+    writeSingleFileImportStatements(mockFileOptions);
 
-      // Setup mock DMMF with Decimal types
-      const mockDMMF = createMockDMMF({
-        hasJsonTypes: false,
-        hasDecimalTypes: true,
-      });
-      ExtendedDMMFSingleton.initialize(mockDMMF);
-
-      // Execute
-      writeSingleFileImportStatements(mockFileOptions);
-
-      // Verify
-      expect(importCalls).toHaveLength(2);
-      expect(importCalls[0]).toEqual({
-        importName: '{ z }',
-        importPath: 'zod',
-      });
-      expect(importCalls[1]).toEqual({
-        importName: '{ Prisma }',
-        importPath: '@prisma/client',
-      });
-    });
-
-    it('should write Prisma import as value when both JSON and Decimal types are present', () => {
-      // Setup config
-      globalConfig.initializeWithConfig({
-        ...DEFAULT_GENERATOR_CONFIG,
-        isPrismaClientGenerator: false,
-        prismaClientPath: '@prisma/client',
-      });
-
-      // Setup mock DMMF with both types
-      const mockDMMF = createMockDMMF({
-        hasJsonTypes: true,
-        hasDecimalTypes: true,
-      });
-      ExtendedDMMFSingleton.initialize(mockDMMF);
-
-      // Execute
-      writeSingleFileImportStatements(mockFileOptions);
-
-      // Verify
-      expect(importCalls).toHaveLength(2);
-      expect(importCalls[0]).toEqual({
-        importName: '{ z }',
-        importPath: 'zod',
-      });
-      expect(importCalls[1]).toEqual({
-        importName: '{ Prisma }',
-        importPath: '@prisma/client',
-      });
-    });
-
-    it('should use custom prismaClientPath from config', () => {
-      // Setup config with custom path
-      globalConfig.initializeWithConfig({
-        ...DEFAULT_GENERATOR_CONFIG,
-        isPrismaClientGenerator: false,
-        prismaClientPath: '../custom/prisma/client',
-      });
-
-      // Setup mock DMMF
-      const mockDMMF = createMockDMMF({
-        hasJsonTypes: false,
-        hasDecimalTypes: false,
-      });
-      ExtendedDMMFSingleton.initialize(mockDMMF);
-
-      // Execute
-      writeSingleFileImportStatements(mockFileOptions);
-
-      // Verify
-      expect(importCalls[1]).toEqual({
-        importName: 'type { Prisma }',
-        importPath: '../custom/prisma/client',
-      });
+    // Verify - only zod import
+    expect(importCalls).toHaveLength(1);
+    expect(importCalls[0]).toEqual({
+      importName: '{ z }',
+      importPath: 'zod',
     });
   });
 
-  /////////////////////////////////////////////
-  // TESTS: isPrismaClientGenerator = true
-  /////////////////////////////////////////////
-
-  describe('when isPrismaClientGenerator is true', () => {
-    it('should write zod import only when no JSON or Decimal types', () => {
-      // Setup config
-      globalConfig.initializeWithConfig({
-        ...DEFAULT_GENERATOR_CONFIG,
-        isPrismaClientGenerator: true,
-        prismaLibraryPath: '@prisma/client/runtime/client',
-      });
-
-      // Setup mock DMMF
-      const mockDMMF = createMockDMMF({
-        hasJsonTypes: false,
-        hasDecimalTypes: false,
-      });
-      ExtendedDMMFSingleton.initialize(mockDMMF);
-
-      // Execute
-      writeSingleFileImportStatements(mockFileOptions);
-
-      // Verify - only zod import
-      expect(importCalls).toHaveLength(1);
-      expect(importCalls[0]).toEqual({
-        importName: '{ z }',
-        importPath: 'zod',
-      });
+  it('should import JSON types when hasJsonTypes is true', () => {
+    // Setup config
+    globalConfig.initializeWithConfig({
+      ...DEFAULT_GENERATOR_CONFIG,
+      prismaLibraryPath: '@prisma/client/runtime/client',
     });
 
-    it('should import JSON types when hasJsonTypes is true', () => {
-      // Setup config
-      globalConfig.initializeWithConfig({
-        ...DEFAULT_GENERATOR_CONFIG,
-        isPrismaClientGenerator: true,
-        prismaLibraryPath: '@prisma/client/runtime/client',
-      });
+    // Setup mock DMMF with JSON types
+    const mockDMMF = createMockDMMF({
+      hasJsonTypes: true,
+      hasDecimalTypes: false,
+    });
+    ExtendedDMMFSingleton.initialize(mockDMMF);
 
-      // Setup mock DMMF with JSON types
-      const mockDMMF = createMockDMMF({
-        hasJsonTypes: true,
-        hasDecimalTypes: false,
-      });
-      ExtendedDMMFSingleton.initialize(mockDMMF);
+    // Execute
+    writeSingleFileImportStatements(mockFileOptions);
 
-      // Execute
-      writeSingleFileImportStatements(mockFileOptions);
+    // Verify
+    expect(importCalls).toHaveLength(3);
+    expect(importCalls[0]).toEqual({
+      importName: '{ z }',
+      importPath: 'zod',
+    });
+    expect(importCalls[1]).toEqual({
+      importName: '{ type JsonValue, type InputJsonValue }',
+      importPath: '@prisma/client/runtime/client',
+    });
+    expect(importCalls[2]).toEqual({
+      importName: '{ DbNull, JsonNull, AnyNull }',
+      importPath: '@prisma/client/runtime/index-browser',
+    });
+  });
 
-      // Verify
-      expect(importCalls).toHaveLength(3);
-      expect(importCalls[0]).toEqual({
-        importName: '{ z }',
-        importPath: 'zod',
-      });
-      expect(importCalls[1]).toEqual({
-        importName: '{ type JsonValue, type InputJsonValue }',
-        importPath: '@prisma/client/runtime/client',
-      });
-      expect(importCalls[2]).toEqual({
-        importName: '{ DbNull, JsonNull, AnyNull }',
-        importPath: '@prisma/client/runtime/index-browser',
-      });
+  it('should import Decimal when hasDecimalTypes is true', () => {
+    // Setup config
+    globalConfig.initializeWithConfig({
+      ...DEFAULT_GENERATOR_CONFIG,
+      prismaLibraryPath: '@prisma/client/runtime/client',
     });
 
-    it('should import Decimal when hasDecimalTypes is true', () => {
-      // Setup config
-      globalConfig.initializeWithConfig({
-        ...DEFAULT_GENERATOR_CONFIG,
-        isPrismaClientGenerator: true,
-        prismaLibraryPath: '@prisma/client/runtime/client',
-      });
+    // Setup mock DMMF with Decimal types
+    const mockDMMF = createMockDMMF({
+      hasJsonTypes: false,
+      hasDecimalTypes: true,
+    });
+    ExtendedDMMFSingleton.initialize(mockDMMF);
 
-      // Setup mock DMMF with Decimal types
-      const mockDMMF = createMockDMMF({
-        hasJsonTypes: false,
-        hasDecimalTypes: true,
-      });
-      ExtendedDMMFSingleton.initialize(mockDMMF);
+    // Execute
+    writeSingleFileImportStatements(mockFileOptions);
 
-      // Execute
-      writeSingleFileImportStatements(mockFileOptions);
+    // Verify
+    expect(importCalls).toHaveLength(3);
+    expect(importCalls[0]).toEqual({
+      importName: '{ z }',
+      importPath: 'zod',
+    });
+    expect(importCalls[1]).toEqual({
+      importName: '{ Decimal }',
+      importPath: 'decimal.js',
+    });
+    expect(importCalls[2]).toEqual({
+      importName: '{ type DecimalJsLike }',
+      importPath: '@prisma/client/runtime/client',
+    });
+  });
 
-      // Verify
-      expect(importCalls).toHaveLength(3);
-      expect(importCalls[0]).toEqual({
-        importName: '{ z }',
-        importPath: 'zod',
-      });
-      expect(importCalls[1]).toEqual({
-        importName: '{ Decimal }',
-        importPath: 'decimal.js',
-      });
-      expect(importCalls[2]).toEqual({
-        importName: '{ type DecimalJsLike }',
-        importPath: '@prisma/client/runtime/client',
-      });
+  it('should import both JSON and Decimal types when both are present', () => {
+    // Setup config
+    globalConfig.initializeWithConfig({
+      ...DEFAULT_GENERATOR_CONFIG,
+      prismaLibraryPath: '@prisma/client/runtime/client',
     });
 
-    it('should import both JSON and Decimal types when both are present', () => {
-      // Setup config
-      globalConfig.initializeWithConfig({
-        ...DEFAULT_GENERATOR_CONFIG,
-        isPrismaClientGenerator: true,
-        prismaLibraryPath: '@prisma/client/runtime/client',
-      });
+    // Setup mock DMMF with both types
+    const mockDMMF = createMockDMMF({
+      hasJsonTypes: true,
+      hasDecimalTypes: true,
+    });
+    ExtendedDMMFSingleton.initialize(mockDMMF);
 
-      // Setup mock DMMF with both types
-      const mockDMMF = createMockDMMF({
-        hasJsonTypes: true,
-        hasDecimalTypes: true,
-      });
-      ExtendedDMMFSingleton.initialize(mockDMMF);
+    // Execute
+    writeSingleFileImportStatements(mockFileOptions);
 
-      // Execute
-      writeSingleFileImportStatements(mockFileOptions);
+    // Verify
+    expect(importCalls).toHaveLength(4);
+    expect(importCalls[0]).toEqual({
+      importName: '{ z }',
+      importPath: 'zod',
+    });
+    expect(importCalls[1]).toEqual({
+      importName: '{ Decimal }',
+      importPath: 'decimal.js',
+    });
+    expect(importCalls[2]).toEqual({
+      importName: '{ type JsonValue, type InputJsonValue, type DecimalJsLike }',
+      importPath: '@prisma/client/runtime/client',
+    });
+    expect(importCalls[3]).toEqual({
+      importName: '{ DbNull, JsonNull, AnyNull }',
+      importPath: '@prisma/client/runtime/index-browser',
+    });
+  });
 
-      // Verify
-      expect(importCalls).toHaveLength(4);
-      expect(importCalls[0]).toEqual({
-        importName: '{ z }',
-        importPath: 'zod',
-      });
-      expect(importCalls[1]).toEqual({
-        importName: '{ Decimal }',
-        importPath: 'decimal.js',
-      });
-      expect(importCalls[2]).toEqual({
-        importName:
-          '{ type JsonValue, type InputJsonValue, type DecimalJsLike }',
-        importPath: '@prisma/client/runtime/client',
-      });
-      expect(importCalls[3]).toEqual({
-        importName: '{ DbNull, JsonNull, AnyNull }',
-        importPath: '@prisma/client/runtime/index-browser',
-      });
+  it('should use custom prismaLibraryPath from config', () => {
+    // Setup config with custom path
+    globalConfig.initializeWithConfig({
+      ...DEFAULT_GENERATOR_CONFIG,
+      prismaLibraryPath: '../custom/runtime/library',
     });
 
-    it('should use custom prismaLibraryPath from config', () => {
-      // Setup config with custom path
-      globalConfig.initializeWithConfig({
-        ...DEFAULT_GENERATOR_CONFIG,
-        isPrismaClientGenerator: true,
-        prismaLibraryPath: '../custom/runtime/library',
-      });
+    // Setup mock DMMF with JSON types
+    const mockDMMF = createMockDMMF({
+      hasJsonTypes: true,
+      hasDecimalTypes: false,
+    });
+    ExtendedDMMFSingleton.initialize(mockDMMF);
 
-      // Setup mock DMMF with JSON types
-      const mockDMMF = createMockDMMF({
-        hasJsonTypes: true,
-        hasDecimalTypes: false,
-      });
-      ExtendedDMMFSingleton.initialize(mockDMMF);
+    // Execute
+    writeSingleFileImportStatements(mockFileOptions);
 
-      // Execute
-      writeSingleFileImportStatements(mockFileOptions);
-
-      // Verify
-      expect(importCalls[1]).toEqual({
-        importName: '{ type JsonValue, type InputJsonValue }',
-        importPath: '../custom/runtime/library',
-      });
+    // Verify
+    expect(importCalls[1]).toEqual({
+      importName: '{ type JsonValue, type InputJsonValue }',
+      importPath: '../custom/runtime/library',
     });
   });
 
@@ -563,7 +404,6 @@ describe('writeSingleFileImportStatements', () => {
       // Setup config
       globalConfig.initializeWithConfig({
         ...DEFAULT_GENERATOR_CONFIG,
-        isPrismaClientGenerator: false,
       });
 
       // Setup mock DMMF with custom imports
@@ -594,7 +434,6 @@ describe('writeSingleFileImportStatements', () => {
       // Setup config
       globalConfig.initializeWithConfig({
         ...DEFAULT_GENERATOR_CONFIG,
-        isPrismaClientGenerator: false,
       });
 
       // Setup mock DMMF with custom imports and JSON types
@@ -608,8 +447,8 @@ describe('writeSingleFileImportStatements', () => {
       // Execute
       writeSingleFileImportStatements(mockFileOptions);
 
-      // Verify
-      expect(importCalls).toHaveLength(2); // zod + Prisma
+      // Verify - now uses runtime imports for JSON types
+      expect(importCalls).toHaveLength(3); // zod + runtime types + null values
       expect(mockFileOptions.writer.writeLine).toHaveBeenCalledTimes(1);
       expect(mockFileOptions.writer.writeLine).toHaveBeenCalledWith(
         "import { validator } from './validators';",
@@ -620,7 +459,6 @@ describe('writeSingleFileImportStatements', () => {
       // Setup config
       globalConfig.initializeWithConfig({
         ...DEFAULT_GENERATOR_CONFIG,
-        isPrismaClientGenerator: false,
       });
 
       // Setup mock DMMF with empty custom imports
@@ -642,7 +480,6 @@ describe('writeSingleFileImportStatements', () => {
       // Setup config
       globalConfig.initializeWithConfig({
         ...DEFAULT_GENERATOR_CONFIG,
-        isPrismaClientGenerator: false,
       });
 
       // Setup mock DMMF with null custom imports
@@ -669,7 +506,6 @@ describe('writeSingleFileImportStatements', () => {
       // Setup config
       globalConfig.initializeWithConfig({
         ...DEFAULT_GENERATOR_CONFIG,
-        isPrismaClientGenerator: true,
         prismaLibraryPath: '@prisma/client/runtime/client',
       });
 
@@ -697,12 +533,11 @@ describe('writeSingleFileImportStatements', () => {
       );
     });
 
-    it('should handle all features together in non-generator mode', () => {
-      // Setup config
+    it('should handle all features together with custom imports', () => {
+      // Setup config with custom library path
       globalConfig.initializeWithConfig({
         ...DEFAULT_GENERATOR_CONFIG,
-        isPrismaClientGenerator: false,
-        prismaClientPath: '../prisma/client',
+        prismaLibraryPath: '../custom/runtime/library',
       });
 
       // Setup mock DMMF
@@ -719,15 +554,24 @@ describe('writeSingleFileImportStatements', () => {
       // Execute
       writeSingleFileImportStatements(mockFileOptions);
 
-      // Verify
-      expect(importCalls).toHaveLength(2);
+      // Verify - now always uses runtime imports
+      expect(importCalls).toHaveLength(4);
       expect(importCalls[0]).toEqual({
         importName: '{ z }',
         importPath: 'zod',
       });
       expect(importCalls[1]).toEqual({
-        importName: '{ Prisma }',
-        importPath: '../prisma/client',
+        importName: '{ Decimal }',
+        importPath: 'decimal.js',
+      });
+      expect(importCalls[2]).toEqual({
+        importName:
+          '{ type JsonValue, type InputJsonValue, type DecimalJsLike }',
+        importPath: '../custom/runtime/library',
+      });
+      expect(importCalls[3]).toEqual({
+        importName: '{ DbNull, JsonNull, AnyNull }',
+        importPath: '@prisma/client/runtime/index-browser',
       });
       expect(mockFileOptions.writer.writeLine).toHaveBeenCalledTimes(2);
     });

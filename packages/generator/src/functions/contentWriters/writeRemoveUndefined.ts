@@ -1,5 +1,4 @@
 import { type ContentWriterOptions } from '../../types';
-import { getConfig } from '../../config';
 
 // maybe needs some comments what the code is doing and
 // in which scenario it is meant to be used
@@ -7,7 +6,6 @@ import { getConfig } from '../../config';
 export const writeRemoveUndefined = ({
   fileWriter: { writer },
 }: ContentWriterOptions) => {
-
   writer
     .newLine()
     .writeLine(`type UnknownRecord = Record<PropertyKey, unknown>;`)

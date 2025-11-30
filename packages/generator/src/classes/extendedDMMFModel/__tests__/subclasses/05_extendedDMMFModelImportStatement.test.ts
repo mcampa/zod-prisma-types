@@ -100,10 +100,10 @@ export function testExtendedDMMFFieldImportStatement<
     it(`should load a class with automatic imports`, async () => {
       const model = getModel(getModelWithAutoImportFields());
 
+      // In single-file mode, JsonValueSchema and enum schemas are in the same file
+      // so only Decimal types need external imports
       expect(model?.['_automaticImports']).toEqual([
-        `import { JsonValueSchema } from '../${DEFAULT_GENERATOR_CONFIG.inputTypePath}/JsonValueSchema'`,
-        `import { Prisma } from '@prisma/client'`,
-        `import { RoleSchema } from '../${DEFAULT_GENERATOR_CONFIG.inputTypePath}/RoleSchema'`,
+        `import { Decimal as PrismaDecimal } from '@prisma/client/runtime/client';`,
       ]);
     });
 
@@ -114,12 +114,12 @@ export function testExtendedDMMFFieldImportStatement<
           '@zod.import(["import { myFunction } from "../../../../utils/myFunction";", "import validator from "validator";"])',
       });
 
+      // In single-file mode, JsonValueSchema and enum schemas are in the same file
+      // so only Decimal types need external imports
       expect(model.imports).toEqual(
         new Set([
           "import validator from 'validator';",
-          `import { JsonValueSchema } from '../${DEFAULT_GENERATOR_CONFIG.inputTypePath}/JsonValueSchema'`,
-          `import { Prisma } from '@prisma/client'`,
-          `import { RoleSchema } from '../${DEFAULT_GENERATOR_CONFIG.inputTypePath}/RoleSchema'`,
+          `import { Decimal as PrismaDecimal } from '@prisma/client/runtime/client';`,
           "import { myFunction } from '../../../../utils/myFunction';",
         ]),
       );

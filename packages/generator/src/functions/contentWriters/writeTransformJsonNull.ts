@@ -1,22 +1,12 @@
 import { type ContentWriterOptions } from '../../types';
-import { getConfig } from '../../config';
 
 export const writeTransformJsonNull = ({
   fileWriter: { writer },
 }: ContentWriterOptions) => {
-  const { prismaClientPath, prismaLibraryPath, isPrismaClientGenerator } =
-    getConfig();
-
-  // TODO: check how to get DbNUll and JsonNull from PrismaClient without importing the whole namespace
-
-  const jsonValueTypeName = isPrismaClientGenerator
-    ? 'JsonValue'
-    : 'Prisma.JsonValue';
-
   writer
     .newLine()
     .write(`export type NullableJsonInput = `)
-    .write(`${jsonValueTypeName} | `)
+    .write(`JsonValue | `)
     .write(`null | `)
     .write(`'JsonNull' | `)
     .write(`'DbNull' | `)

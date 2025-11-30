@@ -1,21 +1,15 @@
 import { ExtendedDMMFOutputType } from '../../classes';
 import { type ContentWriterOptions } from '../../types';
-import { writeZodImport } from '..';
 import { getConfig } from '../../config';
 
 /**
  * The args schema is used in "include" and "select" schemas
  */
 export const writeArgs = (
-  {
-    fileWriter: { writer },
-  }: ContentWriterOptions,
+  { fileWriter: { writer } }: ContentWriterOptions,
   model: ExtendedDMMFOutputType,
 ) => {
-  const {
-    useExactOptionalPropertyTypes,
-    prismaVersion,
-  } = getConfig();
+  const { useExactOptionalPropertyTypes, prismaVersion } = getConfig();
 
   writer
     .blankLine()

@@ -9,13 +9,9 @@ export const getPrismaClientGeneratorConfig = (options: GeneratorOptions) => {
       g.provider.value === 'prisma-client',
   );
 
-  const isPrismaClientGenerator =
-    prismaClientOptions?.provider.value === 'prisma-client';
-
   const prismaLibraryPath = '@prisma/client/runtime/client';
 
   const baseOptions = {
-    isPrismaClientGenerator,
     prismaLibraryPath,
   };
 

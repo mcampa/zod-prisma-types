@@ -183,41 +183,14 @@ export class ExtendedDMMFSchemaField
   }
 
   private _setArgTypeImports() {
-    const { prismaClientPath, inputTypePath } = getConfig();
+    const { prismaClientPath } = getConfig();
     const prismaImport = `import type { Prisma } from '${prismaClientPath}';`;
 
+    // In single-file mode, all schemas are in the same file
+    // so we only need basic imports, not relative path imports to other files
     const imports: string[] = ["import { z } from 'zod';", prismaImport];
 
-    if (this.writeIncludeArg) {
-      const modelTypeName =
-        typeof this.modelType === 'string'
-          ? this.modelType
-          : this.modelType.name;
-      imports.push(
-        `import { ${modelTypeName}IncludeSchema } from '../${inputTypePath}/${modelTypeName}IncludeSchema'`,
-      );
-    }
-
-    this.args.forEach((arg) => {
-      if (arg.hasMultipleTypes) {
-        return arg.inputTypes.forEach((inputType) => {
-          imports.push(
-            `import { ${inputType.type}Schema } from '../${inputTypePath}/${inputType.type}Schema'`,
-          );
-        });
-      }
-
-      return imports.push(
-        `import { ${arg.inputTypes[0].type}Schema } from '../${inputTypePath}/${arg.inputTypes[0].type}Schema'`,
-      );
-    });
-
-    // IntSchema and BooleanSchema are not needed since z.boolen() and z.number() are used
-    return new Set(
-      imports.filter(
-        (imp) => !imp.includes('IntSchema') && !imp.includes('BooleanSchema'),
-      ),
-    );
+    return new Set(imports);
   }
 
   // When using mongodb, there is no `findMany` arg type created even for lists.

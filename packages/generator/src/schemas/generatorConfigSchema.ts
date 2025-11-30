@@ -98,8 +98,6 @@ export const configSchema = z.object({
    */
   decimalJSInstalled: z.boolean().default(false),
 
-  isPrismaClientGenerator: z.boolean().default(false),
-
   /**
    * Path to the prisma client runtime library
    *

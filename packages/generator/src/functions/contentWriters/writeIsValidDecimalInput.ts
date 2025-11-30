@@ -1,19 +1,8 @@
 import { type ContentWriterOptions } from '../../types';
-import { getConfig } from '../../config';
 
 export const writeIsValidDecimalInput = ({
   fileWriter: { writer },
 }: ContentWriterOptions) => {
-  const {
-    prismaClientPath,
-    prismaLibraryPath,
-    isPrismaClientGenerator,
-  } = getConfig();
-
-  const decimalJsLikeTypeName = isPrismaClientGenerator
-    ? 'DecimalJsLike'
-    : 'Prisma.DecimalJsLike';
-
   writer
     .blankLine()
     .writeLine(
@@ -24,7 +13,7 @@ export const writeIsValidDecimalInput = ({
     .withIndentationLevel(1, () => {
       writer
         .write(
-          `(v?: null | string | number | ${decimalJsLikeTypeName}): v is string | number | ${decimalJsLikeTypeName} => `,
+          `(v?: null | string | number | DecimalJsLike): v is string | number | DecimalJsLike => `,
         )
         .inlineBlock(() => {
           writer

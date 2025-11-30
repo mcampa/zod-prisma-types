@@ -99,49 +99,15 @@ export class ExtendedDMMFOutputType
   }
 
   private _setSelectImports() {
-    const imports = new Set<string>();
-    const { outputTypePath } = getConfig();
-
-    this.fields.forEach((field) => {
-      if (field.writeSelectFindManyField) {
-        return imports.add(
-          `import { ${field.outputType.type}FindManyArgsSchema } from "../${outputTypePath}/${field.outputType.type}FindManyArgsSchema"`,
-        );
-      }
-
-      if (field.writeSelectField) {
-        return imports.add(
-          `import { ${field.outputType.type}ArgsSchema } from "../${outputTypePath}/${field.outputType.type}ArgsSchema"`,
-        );
-      }
-
-      return undefined;
-    });
-
-    return imports;
+    // In single-file mode, all schemas are in the same file
+    // so no import statements are needed
+    return new Set<string>();
   }
 
   private _setIncludeImports() {
-    const imports = new Set<string>();
-    const { outputTypePath } = getConfig();
-
-    this.fields.forEach((field) => {
-      if (field.writeIncludeFindManyField) {
-        return imports.add(
-          `import { ${field.outputType.type}FindManyArgsSchema } from "../${outputTypePath}/${field.outputType.type}FindManyArgsSchema"`,
-        );
-      }
-
-      if (field.writeIncludeField) {
-        return imports.add(
-          `import { ${field.outputType.type}ArgsSchema } from "../${outputTypePath}/${field.outputType.type}ArgsSchema"`,
-        );
-      }
-
-      return undefined;
-    });
-
-    return imports;
+    // In single-file mode, all schemas are in the same file
+    // so no import statements are needed
+    return new Set<string>();
   }
 
   /**
