@@ -3,7 +3,6 @@ import type DMMF from '@prisma/dmmf';
 import { GeneratorConfig } from '../schemas';
 
 export const DEFAULT_GENERATOR_CONFIG: GeneratorConfig = {
-  useMultipleFiles: false,
   createInputTypes: true,
   createModelTypes: true,
   createOptionalDefaultValuesTypes: false,
@@ -18,9 +17,6 @@ export const DEFAULT_GENERATOR_CONFIG: GeneratorConfig = {
   writeNullishInModelTypes: false,
   isMongoDb: false,
   validateWhereUniqueInput: false,
-  inputTypePath: 'inputTypeSchemas',
-  outputTypePath: 'outputTypeSchemas',
-  writeBarrelFiles: true,
   decimalJSInstalled: true,
   useTypeAssertions: false,
   useExactOptionalPropertyTypes: false,

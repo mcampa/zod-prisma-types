@@ -5,30 +5,14 @@ import { getConfig } from '../../config';
 
 export const writeCountArgs = (
   {
-    fileWriter: { writer, writeImport },
-    getSingleFileContent = false,
+    fileWriter: { writer },
   }: ContentWriterOptions,
   model: ExtendedDMMFOutputType,
 ) => {
   const {
-    useMultipleFiles,
     useExactOptionalPropertyTypes,
-    prismaClientPath,
-    inputTypePath,
     prismaVersion,
   } = getConfig();
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writeZodImport(writeImport);
-    writeImport('type { Prisma }', prismaClientPath);
-    if (useExactOptionalPropertyTypes) {
-      writeImport('ru', `../${inputTypePath}/RemoveUndefined`);
-    }
-    writeImport(
-      `{ ${model.name}CountOutputTypeSelectSchema }`,
-      `./${model.name}CountOutputTypeSelectSchema`,
-    );
-  }
 
   writer
     .blankLine()
@@ -54,10 +38,4 @@ export const writeCountArgs = (
     .write(`).strict()`)
     .conditionalWrite(useExactOptionalPropertyTypes, '.transform(ru)')
     .write(`;`);
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writer
-      .blankLine()
-      .writeLine(`export default ${model.name}CountOutputTypeSelectSchema;`);
-  }
 };

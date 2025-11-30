@@ -5,26 +5,13 @@ import { getConfig } from '../../config';
 
 export const writeSelect = (
   {
-    fileWriter: { writer, writeImport, writeImportSet },
-    getSingleFileContent = false,
+    fileWriter: { writer },
   }: ContentWriterOptions,
   model: ExtendedDMMFOutputType,
 ) => {
   const {
-    useMultipleFiles,
     useExactOptionalPropertyTypes,
-    prismaClientPath,
-    inputTypePath,
   } = getConfig();
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writeZodImport(writeImport);
-    writeImport('type { Prisma }', prismaClientPath);
-    if (useExactOptionalPropertyTypes) {
-      writeImport('ru', `../${inputTypePath}/RemoveUndefined`);
-    }
-    writeImportSet(model.selectImports);
-  }
 
   writer
     .blankLine()
@@ -83,8 +70,4 @@ export const writeSelect = (
     // .write(' as z.ZodType<Prisma.')
     // .write(`${model.name}Select>`)
     .newLine();
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writer.blankLine().writeLine(`export default ${model.name}SelectSchema;`);
-  }
 };

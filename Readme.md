@@ -64,9 +64,7 @@ Be aware that some generator options have been removed, a few new ones have been
 - [Installation](#installation)
 - [`tsconfig.json`](#tsconfigjson)
 - [Usage](#usage)
-  - [`useMultipleFiles`](#usemultiplefiles)
   - [`output`](#output)
-  - [`writeBarrelFiles`](#writebarrelfiles)
   - [`createInputTypes`](#createinputtypes)
   - [`createModelTypes`](#createmodeltypes)
   - [`addInputTypeValidation`](#addinputtypevalidation)
@@ -186,8 +184,6 @@ If you want to customize the behavior of the generator you can use the following
 generator zod {
   provider                         = "ts-node-dev ../generator/src/bin.ts"
   output                           = "./generated/zod" // default is ./generated/zod
-  useMultipleFiles                 = true // default is false
-  writeBarrelFiles                 = false // default is true
   createInputTypes                 = false // default is true
   createModelTypes                 = false // default is true
   addInputTypeValidation           = false // default is true
@@ -204,37 +200,11 @@ generator zod {
 }
 ```
 
-### `useMultipleFiles`
-
-> default: `false`
-
-If you want to create multiple files instead of a single `index.ts` file you can set this option to `true`. This will create a file for each model, enum, inputType, argType, filter, etc. The files will be created in sub folders in the specified output folder and a barrel file will be added at the root of the output folder.
-
-```prisma
-generator zod {
-  // ...rest of config
-  useMultipleFiles = false
-}
-```
-
 ### `output`
 
 > default: `./generated/zod`
 
 Provide an alternative output path.
-
-### `writeBarrelFiles`
-
-> default: `true`
-
-If you use `useMultipleFiles` and do not want to create a barrel file for each sub folder you can set this option to `false`. This will create an `index.ts` file in each sub folder that exports all the files in the folder. This option may be beneficial for typescript performance on big schemas.
-
-```prisma
-generator zod {
-  // ...rest of config
-  writeBarrelFiles = false
-}
-```
 
 ### `createInputTypes`
 
@@ -1396,8 +1366,6 @@ export const ModelWithFieldLevelImportCreateInputSchema: z.ZodType<Prisma.ModelW
 With this approach you can use
 
 The downside of this approach is that
-
-> Please be aware that you have to add an additional level to relative imports if you use the `useMultipleFiles` option.
 
 ## Custom model error messages
 

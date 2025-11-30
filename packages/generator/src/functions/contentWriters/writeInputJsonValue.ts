@@ -1,26 +1,14 @@
 import { type ContentWriterOptions } from '../../types';
-import { writeZodImport } from '..';
 import { getConfig } from '../../config';
 
 export const writeInputJsonValue = ({
-  fileWriter: { writer, writeImport },
-  getSingleFileContent = false,
+  fileWriter: { writer },
 }: ContentWriterOptions) => {
   const {
-    useMultipleFiles,
     prismaClientPath,
     prismaLibraryPath,
     isPrismaClientGenerator,
   } = getConfig();
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writeZodImport(writeImport);
-    if (isPrismaClientGenerator) {
-      writeImport('type { InputJsonValue }', prismaLibraryPath);
-    } else {
-      writeImport('{ Prisma }', prismaClientPath);
-    }
-  }
 
   const inputJsonValueTypeName = isPrismaClientGenerator
     ? 'InputJsonValue'
@@ -55,8 +43,4 @@ export const writeInputJsonValue = ({
     .writeLine(
       `export type InputJsonValueType = z.infer<typeof InputJsonValueSchema>;`,
     );
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writer.blankLine().writeLine(`export default InputJsonValueSchema;`);
-  }
 };

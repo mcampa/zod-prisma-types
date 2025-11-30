@@ -1,6 +1,6 @@
 {
   "name": "zod-prisma-schemas",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generates zod schemas from Prisma models with advanced validation (Fork of zod-prisma-types)",
   "author": "Mario Campa",
   "license": "MIT",

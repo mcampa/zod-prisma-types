@@ -12,73 +12,15 @@ export const writeModelOrType = (
   {
     fileWriter: {
       writer,
-      writeImport,
-      writeImportSet,
       writeJSDoc,
       writeHeading,
     },
-    getSingleFileContent = false,
   }: ContentWriterOptions,
   model: ExtendedDMMFModel,
 ) => {
-  const { useMultipleFiles, createRelationValuesTypes } = getConfig();
+  const { createRelationValuesTypes } = getConfig();
   const dmmf = getExtendedDMMF();
 
-  if (useMultipleFiles && !getSingleFileContent) {
-    writeZodImport(writeImport);
-    writeImportSet(model.imports);
-
-    if (createRelationValuesTypes && model.hasRelationFields) {
-      // import the necessary types to handle json nulls
-      // if (model.hasOptionalJsonFields) {
-      //   writeImport(
-      //     `type { JsonValueType | null }`,
-      //     `../${inputTypePath}/transformJsonNull`,
-      //   );
-      // }
-      if (model.hasOptionalJsonFields) {
-        writeImport(
-          `type { JsonValueType }`,
-          `../inputTypeSchemas/JsonValueSchema`,
-        );
-      }
-
-      const imports = new Set<string>();
-
-      model.filteredRelationFields.forEach((field) => {
-        const importName = `${field.type}Schema`;
-        const typeImports: string[] = [];
-        const schemaImports: string[] = [];
-        const withRelationsOrNot = !field.isCompositeType
-          ? 'WithRelations'
-          : '';
-        typeImports.push(`${field.type}${withRelationsOrNot}`);
-        schemaImports.push(`${field.type}${withRelationsOrNot}Schema`);
-
-        if (model.writePartialTypes) {
-          typeImports.push(`${field.type}Partial${withRelationsOrNot}`);
-          schemaImports.push(`${field.type}Partial${withRelationsOrNot}Schema`);
-        }
-
-        if (model.writeOptionalDefaultValuesTypes) {
-          typeImports.push(
-            `${field.type}OptionalDefaults${withRelationsOrNot}`,
-          );
-          schemaImports.push(
-            `${field.type}OptionalDefaults${withRelationsOrNot}Schema`,
-          );
-        }
-        imports.add(
-          `import { ${schemaImports.join(', ')} } from './${importName}'`,
-        );
-        imports.add(
-          `import type { ${typeImports.join(', ')} } from './${importName}'`,
-        );
-      });
-
-      writeImportSet(imports);
-    }
-  }
 
   writer.blankLine();
 
@@ -168,7 +110,7 @@ export const writeModelOrType = (
 
     writeHeading(
       `${model.formattedNames.upperCaseSpace} OPTIONAL DEFAULTS SCHEMA`,
-      useMultipleFiles ? 'FAT' : 'SLIM',
+      'SLIM',
     );
 
     writer
@@ -211,7 +153,7 @@ export const writeModelOrType = (
 
     writeHeading(
       `${model.formattedNames.upperCaseSpace} RELATION SCHEMA`,
-      useMultipleFiles ? 'FAT' : 'SLIM',
+      'SLIM',
     );
 
     writer
@@ -279,7 +221,7 @@ export const writeModelOrType = (
 
     writeHeading(
       `${model.formattedNames.upperCaseSpace} OPTIONAL DEFAULTS RELATION SCHEMA`,
-      useMultipleFiles ? 'FAT' : 'SLIM',
+      'SLIM',
     );
 
     writer
@@ -355,7 +297,7 @@ export const writeModelOrType = (
 
     writeHeading(
       `${model.formattedNames.upperCaseSpace} PARTIAL RELATION SCHEMA`,
-      useMultipleFiles ? 'FAT' : 'SLIM',
+      'SLIM',
     );
 
     writer
@@ -501,9 +443,5 @@ export const writeModelOrType = (
         })
         .write(`).partial())`);
     }
-  }
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writer.blankLine().writeLine(`export default ${model.name}Schema;`);
   }
 };

@@ -2,23 +2,13 @@ import { type ContentWriterOptions } from '../../types';
 import { getConfig } from '../../config';
 
 export const writeIsValidDecimalInput = ({
-  fileWriter: { writer, writeImport },
-  getSingleFileContent = false,
+  fileWriter: { writer },
 }: ContentWriterOptions) => {
   const {
-    useMultipleFiles,
     prismaClientPath,
     prismaLibraryPath,
     isPrismaClientGenerator,
   } = getConfig();
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    if (isPrismaClientGenerator) {
-      writeImport('type { DecimalJsLike }', `${prismaLibraryPath}`);
-    } else {
-      writeImport('type { Prisma }', `${prismaClientPath}`);
-    }
-  }
 
   const decimalJsLikeTypeName = isPrismaClientGenerator
     ? 'DecimalJsLike'
@@ -54,8 +44,4 @@ export const writeIsValidDecimalInput = ({
         })
         .write(`;`);
     });
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writer.blankLine().writeLine(`export default isValidDecimalInput;`);
-  }
 };

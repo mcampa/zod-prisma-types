@@ -8,36 +8,15 @@ import { getConfig } from '../../config';
  */
 export const writeArgs = (
   {
-    fileWriter: { writer, writeImport },
-    getSingleFileContent = false,
+    fileWriter: { writer },
   }: ContentWriterOptions,
   model: ExtendedDMMFOutputType,
 ) => {
   const {
-    useMultipleFiles,
     useExactOptionalPropertyTypes,
-    prismaClientPath,
-    inputTypePath,
     prismaVersion,
   } = getConfig();
 
-  if (useMultipleFiles && !getSingleFileContent) {
-    writeZodImport(writeImport);
-    writeImport('type { Prisma }', prismaClientPath);
-    writeImport(
-      `{ ${model.name}SelectSchema }`,
-      `../${inputTypePath}/${model.name}SelectSchema`,
-    );
-    if (useExactOptionalPropertyTypes) {
-      writeImport('ru', `../${inputTypePath}/RemoveUndefined`);
-    }
-    if (model.hasRelationField()) {
-      writeImport(
-        `{ ${model.name}IncludeSchema }`,
-        `../${inputTypePath}/${model.name}IncludeSchema`,
-      );
-    }
-  }
   writer
     .blankLine()
     .write(`export const ${model.name}ArgsSchema: `)
@@ -67,8 +46,4 @@ export const writeArgs = (
     .write(`).strict()`)
     .conditionalWrite(useExactOptionalPropertyTypes, '.transform(ru)')
     .write(`;`);
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writer.blankLine().writeLine(`export default ${model.name}ArgsSchema;`);
-  }
 };

@@ -2,16 +2,6 @@ import { VersionSchema } from '../utils/getPackageVersion';
 import { z } from 'zod';
 
 export const configSchema = z.object({
-  useMultipleFiles: z
-    .string()
-    .optional()
-    .default('false')
-    .transform((val) => val === 'true'),
-  writeBarrelFiles: z
-    .string()
-    .optional()
-    .default('true')
-    .transform((val) => val === 'true'),
   createInputTypes: z
     .string()
     .optional()
@@ -92,18 +82,6 @@ export const configSchema = z.object({
     .optional()
     .default('false')
     .transform((val) => val === 'true'),
-
-  /**
-   * SubPath for the input type schemas in multiple file mode.
-   * `inputTypeSchemas`
-   */
-  inputTypePath: z.string().optional().default('inputTypeSchemas'), // currently only used internally
-
-  /**
-   * SubPath for the output type schemas in multiple file mode.
-   *`outputTypeSchemas`
-   */
-  outputTypePath: z.string().optional().default('outputTypeSchemas'), // currently only used internally
 
   /**
    * Version of prisma client to determine certain implementation details

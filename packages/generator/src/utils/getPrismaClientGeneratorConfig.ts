@@ -44,15 +44,6 @@ export const getPrismaClientGeneratorConfig = (options: GeneratorOptions) => {
 
   if (!prismaClientPath) return baseOptions;
 
-  // if multiple files are used the path needs to add one level up
-  // because the schemas are generated in subfolders of the output path
-  if (options.generator.config?.['useMultipleFiles']) {
-    return {
-      ...baseOptions,
-      prismaClientPath: `../${prismaClientPath}`,
-    };
-  }
-
   // return path to be spread into the generator config
   return { ...baseOptions, prismaClientPath };
 };

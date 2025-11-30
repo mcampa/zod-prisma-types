@@ -1,17 +1,8 @@
 import { type ContentWriterOptions } from '../../types';
-import { writeZodImport } from '..';
-import { getConfig } from '../../config';
 
 export const writeDecimalJsLike = ({
-  fileWriter: { writer, writeImport },
-  getSingleFileContent = false,
+  fileWriter: { writer },
 }: ContentWriterOptions) => {
-  const { useMultipleFiles } = getConfig();
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writeZodImport(writeImport);
-    writeImport('{ Decimal }', 'decimal.js');
-  }
   writer
     .blankLine()
     .writeLine(`export const DecimalJsLikeSchema = z.preprocess((v, c) => {`)
@@ -21,8 +12,4 @@ export const writeDecimalJsLike = ({
       );
     })
     .writeLine(`}, z.instanceof(Decimal));`);
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writer.blankLine().writeLine(`export default DecimalJsLikeSchema;`);
-  }
 };

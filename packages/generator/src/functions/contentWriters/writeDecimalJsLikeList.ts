@@ -1,26 +1,14 @@
 import { type ContentWriterOptions } from '../../types';
-import { writeZodImport } from '..';
 import { getConfig } from '../../config';
 
 export const writeDecimalJsLikeList = ({
-  fileWriter: { writer, writeImport },
-  getSingleFileContent = false,
+  fileWriter: { writer },
 }: ContentWriterOptions) => {
   const {
-    useMultipleFiles,
     prismaClientPath,
     prismaLibraryPath,
     isPrismaClientGenerator,
   } = getConfig();
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writeZodImport(writeImport);
-    if (isPrismaClientGenerator) {
-      writeImport('type { DecimalJsLike }', `${prismaLibraryPath}`);
-    } else {
-      writeImport('type { Prisma }', `${prismaClientPath}`);
-    }
-  }
 
   const decimalJsLikeListTypeName = isPrismaClientGenerator
     ? 'DecimalJsLike'
@@ -39,8 +27,4 @@ export const writeDecimalJsLikeList = ({
         .writeLine(`toFixed: z.function(z.tuple([]), z.string()),`);
     })
     .writeLine(`}).array();`);
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writer.blankLine().writeLine(`export default DecimalJsLikeListSchema;`);
-  }
 };

@@ -22,25 +22,16 @@ interface WriteInputTypeFieldOptions {
 
 export const writeInputObjectType = (
   {
-    fileWriter: { writer, writeImportSet, writeImport },
-    getSingleFileContent = false,
+    fileWriter: { writer },
   }: ContentWriterOptions,
   inputType: ExtendedDMMFInputType,
 ) => {
   const {
-    useMultipleFiles,
     useExactOptionalPropertyTypes,
     addInputTypeValidation,
     // useTypeAssertions,
     zodVersion,
   } = getConfig();
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writeImportSet(inputType.imports);
-    if (useExactOptionalPropertyTypes) {
-      writeImport('ru', `./RemoveUndefined`);
-    }
-  }
 
   // when an omit field is present, the type is not a native prism type
   // but a zod union of the native type and an omit type
@@ -125,10 +116,6 @@ export const writeInputObjectType = (
     .write(`;`);
   // .conditionalWrite(useTypeAssertions, ` as ${type};`)
   // .conditionalWrite(!useTypeAssertions, `;`);
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writer.blankLine().writeLine(`export default ${inputType.name}Schema;`);
-  }
 };
 
 const writeInputTypeField = ({

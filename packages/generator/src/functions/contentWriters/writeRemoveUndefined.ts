@@ -6,9 +6,7 @@ import { getConfig } from '../../config';
 
 export const writeRemoveUndefined = ({
   fileWriter: { writer },
-  getSingleFileContent = false,
 }: ContentWriterOptions) => {
-  const { useMultipleFiles } = getConfig();
 
   writer
     .newLine()
@@ -180,11 +178,4 @@ export const writeRemoveUndefined = ({
     })
     .write(`;`)
     .blankLine();
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writer
-      .blankLine()
-      .writeLine(`export default ru;`)
-      .writeLine(`export { ru as RemoveUndefined };`);
-  }
 };

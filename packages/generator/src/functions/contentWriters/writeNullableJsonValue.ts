@@ -1,19 +1,8 @@
 import { type ContentWriterOptions } from '../../types';
-import { writeZodImport } from '..';
-import { getConfig } from '../../config';
 
 export const writeNullableJsonValue = ({
-  fileWriter: { writer, writeImport },
-  getSingleFileContent = false,
+  fileWriter: { writer },
 }: ContentWriterOptions) => {
-  const { useMultipleFiles } = getConfig();
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writeZodImport(writeImport);
-    writeImport('transformJsonNull', './transformJsonNull');
-    writeImport('JsonValueSchema', './JsonValueSchema');
-  }
-
   writer
     .blankLine()
     .writeLine(`export const NullableJsonValue = z`)
@@ -29,8 +18,4 @@ export const writeNullableJsonValue = ({
     .writeLine(
       `export type NullableJsonValueType = z.infer<typeof NullableJsonValue>;`,
     );
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writer.blankLine().writeLine(`export default NullableJsonValue;`);
-  }
 };

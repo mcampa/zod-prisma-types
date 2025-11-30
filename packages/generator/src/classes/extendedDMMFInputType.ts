@@ -119,7 +119,7 @@ export class ExtendedDMMFInputType
 
   private _fieldIsPrismaFunctionType() {
     const config = getConfig();
-    if (!config.useMultipleFiles || config.validateWhereUniqueInput) {
+    if (config.validateWhereUniqueInput) {
       return PRISMA_FUNCTION_TYPES_WITH_VALIDATORS_WHERE_UNIQUE.test(this.name);
     }
     return PRISMA_FUNCTION_TYPES_WITH_VALIDATORS.test(this.name);

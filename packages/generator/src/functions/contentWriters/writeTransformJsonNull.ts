@@ -2,25 +2,12 @@ import { type ContentWriterOptions } from '../../types';
 import { getConfig } from '../../config';
 
 export const writeTransformJsonNull = ({
-  fileWriter: { writer, writeImport },
-  getSingleFileContent = false,
+  fileWriter: { writer },
 }: ContentWriterOptions) => {
-  const {
-    useMultipleFiles,
-    prismaClientPath,
-    prismaLibraryPath,
-    isPrismaClientGenerator,
-  } = getConfig();
+  const { prismaClientPath, prismaLibraryPath, isPrismaClientGenerator } =
+    getConfig();
 
   // TODO: check how to get DbNUll and JsonNull from PrismaClient without importing the whole namespace
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    if (isPrismaClientGenerator) {
-      writeImport('type { objectEnumValues, JsonValue }', prismaLibraryPath);
-    } else {
-      writeImport('{ Prisma }', prismaClientPath);
-    }
-  }
 
   const jsonValueTypeName = isPrismaClientGenerator
     ? 'JsonValue'
@@ -46,8 +33,4 @@ export const writeTransformJsonNull = ({
         .writeLine(`return v;`);
     })
     .write(`;`);
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writer.blankLine().writeLine(`export default transformJsonNull;`);
-  }
 };

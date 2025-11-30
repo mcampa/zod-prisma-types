@@ -4,25 +4,12 @@ import { writeZodImport } from '..';
 import { getConfig } from '../../config';
 
 export const writeInclude = (
-  { fileWriter: { writer, writeImport, writeImportSet } }: ContentWriterOptions,
+  { fileWriter: { writer } }: ContentWriterOptions,
   model: ExtendedDMMFOutputType,
-  getSingleFileContent = false,
 ) => {
   const {
-    useMultipleFiles,
     useExactOptionalPropertyTypes,
-    prismaClientPath,
-    inputTypePath,
   } = getConfig();
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writeZodImport(writeImport);
-    writeImport('type { Prisma }', prismaClientPath);
-    if (useExactOptionalPropertyTypes) {
-      writeImport('ru', `../${inputTypePath}/RemoveUndefined`);
-    }
-    writeImportSet(model.includeImports);
-  }
 
   writer
     .blankLine()
@@ -55,8 +42,4 @@ export const writeInclude = (
     .write(`).strict()`)
     .conditionalWrite(useExactOptionalPropertyTypes, '.transform(ru)')
     .write(`;`);
-
-  if (useMultipleFiles && !getSingleFileContent) {
-    writer.blankLine().writeLine(`export default ${model.name}IncludeSchema;`);
-  }
 };
