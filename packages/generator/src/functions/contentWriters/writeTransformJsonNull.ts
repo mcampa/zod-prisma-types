@@ -10,8 +10,8 @@ export const writeTransformJsonNull = ({
     .write(`null | `)
     .write(`'JsonNull' | `)
     .write(`'DbNull' | `)
-    .write(`DbNull | `)
-    .write(`JsonNull;`)
+    .write(`typeof DbNull | `)
+    .write(`typeof JsonNull;`)
     .blankLine();
 
   writer
