@@ -14,7 +14,8 @@ dist
 # Vscode
 .vscode
 
-# Turborepo
-.turbo
-
 .DS_Store
+
+# e2e artifacts
+e2e/.generated
+e2e/.workdir-*

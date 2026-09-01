@@ -1,33 +1,14 @@
-[![NPM version](https://img.shields.io/npm/v/zod-prisma-types?style=for-the-badge)](https://www.npmjs.com/package/zod-prisma-types)
-[![Stars](https://img.shields.io/github/stars/chrishoermann/zod-prisma-types?style=for-the-badge)](https://github.com/chrishoermann/zod-prisma-types/stargazers)
-[![Contirbutors](https://img.shields.io/github/contributors/chrishoermann/zod-prisma-types?style=for-the-badge)](https://github.com/chrishoermann/zod-prisma-types/graphs/contributors)
-[![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](https://github.com/chrishoermann/zod-prisma-types/blob/master/LICENSE)
-[![Issues](https://img.shields.io/github/issues/chrishoermann/zod-prisma-types?style=for-the-badge)](https://github.com/chrishoermann/zod-prisma-types/issues)
+[![NPM version](https://img.shields.io/npm/v/zod-prisma-schemas?style=for-the-badge)](https://www.npmjs.com/package/zod-prisma-schemas)
+[![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](https://github.com/mcampa/zod-prisma-types/blob/master/LICENSE)
 
-# zod-prisma-types <!-- omit from toc -->
+# zod-prisma-schemas <!-- omit from toc -->
 
-`zod-prisma-types` is a generator for [prisma](www.prisma.io) that generates [zod](https://github.com/colinhacks/zod) schemas from your prisma models. This includes schemas of models, enums, inputTypes, argTypes, filters and so on. It also provides options to write advanced zod validators directly in the Prisma schema comments.
+`zod-prisma-schemas` is a generator for [prisma](www.prisma.io) that generates [zod](https://github.com/colinhacks/zod) schemas from your prisma models. This includes schemas of models, enums, inputTypes, argTypes, filters and so on. It also provides options to write advanced zod validators directly in the Prisma schema comments.
 
-Since I'm maintaining the generator in my spare time consider buying me a coffee or sponsoring me if you like the project. Thanks!
+This is my own fork of [`zod-prisma-types`](https://github.com/chrishoermann/zod-prisma-types) made by Chris Hörmann that I use for my own use cases. I don't provide any support for it.
 
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/chrishoermann)
-
-## ⚠️ Maintenance Notice & Recommendation
-
-> **🕐 Limited Maintenance Mode**  
-> Due to time constraints, this package will only receive critical bug fixes and essential updates. I no longer use Prisma as extensively in my projects, which means I don't personally benefit from new generator features that much anymore.
-
-> **🚀 Recommendation for New Projects**  
-> For new projects, please consider using [**prisma-zod-generator**](https://omar-dulaimi.github.io/prisma-zod-generator/) by Omar Dulaimi. Omar maintains multiple Prisma generators and, I believe, has much deeper expertise in this domain than I do. It also seems to have quite similar features.
-
-> **💡 Why the Alternative?**  
-> Omar's active involvement with multiple Prisma generators means better feature coverage, more frequent updates, and deeper integration with the Prisma ecosystem.
-
----
-
-**📦 Current Status:** Maintenance mode - critical fixes only  
-**🔄 Recommended Alternative:** [prisma-zod-generator](https://github.com/omar-dulaimi/prisma-zod-generator)  
-**👤 Maintainer:** [Omar Dulaimi](https://github.com/omar-dulaimi)
+> **Recommendation for New Projects**
+> For new projects, consider using [**prisma-zod-generator**](https://omar-dulaimi.github.io/prisma-zod-generator/) by Omar Dulaimi.
 
 ## Supported versions
 
@@ -122,19 +103,19 @@ For one of my projects I was in need of a generator that offers the possibility 
 via npm:
 
 ```bash
-npm install zod-prisma-types
+npm install zod-prisma-schemas
 ```
 
 via yarn:
 
 ```bash
-yarn add zod-prisma-types
+yarn add zod-prisma-schemas
 ```
 
 via pnpm:
 
 ```bash
-pnpm add zod-prisma-types
+pnpm add zod-prisma-schemas
 ```
 
 ## `tsconfig.json`

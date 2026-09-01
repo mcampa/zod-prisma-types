@@ -1,17 +1,76 @@
 {
-  "name": "zod-prisma-types-monorepo",
-  "version": "1.0.1",
-  "description": "",
-  "main": "index.js",
+  "name": "zod-prisma-schemas",
+  "version": "1.0.4",
+  "description": "Generates zod schemas from Prisma models with advanced validation (Fork of zod-prisma-types)",
+  "author": "Mario Campa",
+  "license": "MIT",
+  "packageManager": "pnpm@10.17.1",
+  "main": "dist/generator.js",
+  "types": "dist/generator.d.ts",
+  "private": false,
+  "keywords": [
+    "zod",
+    "prisma",
+    "typescript",
+    "schema",
+    "types",
+    "generator",
+    "validation"
+  ],
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mcampa/zod-prisma-types.git"
+  },
+  "bin": {
+    "zod-prisma-types": "dist/bin.js"
+  },
   "scripts": {
-    "test": "turbo run test",
-    "lint": "turbo run lint"
+    "lint": "eslint --ext ts,tsx,js,jsx --fix .",
+    "lint:check": "eslint --ext ts,tsx,js,jsx .",
+    "test": "vitest",
+    "build": "tsc",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "test:e2e": "pnpm build && vitest run --config vite.e2e.config.mts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "devDependencies": {
+    "@prisma/client": "7.10.0",
+    "@prisma/internals": "7.10.0",
+    "@types/lodash": "^4.17.20",
+    "@types/node": "^22.20.1",
+    "@typescript-eslint/eslint-plugin": "^8.45.0",
+    "@typescript-eslint/parser": "^8.45.0",
+    "decimal.js": "^10.6.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.2",
+    "eslint-config-universe": "^14.3.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.6.2",
+    "prisma": "7.10.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
   "dependencies": {
-    "turbo": "^2.5.8"
+    "@prisma/dmmf": "7.10.0",
+    "@prisma/generator-helper": "7.10.0",
+    "code-block-writer": "^13.0.3",
+    "lodash": "^4.17.21",
+    "zod": "^4.1.11"
   },
-  "packageManager": "pnpm@10.17.1"
+  "peerDependencies": {
+    "@prisma/client": "^7.x.x",
+    "prisma": "^7.x.x",
+    "zod": "^4.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "prisma",
+      "esbuild"
+    ]
+  }
 }
