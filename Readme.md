@@ -17,6 +17,19 @@ This is my own fork of [`zod-prisma-types`](https://github.com/chrishoermann/zod
 
 > Make shure `zod` is installed as a `dependency` and not a `devDependency` for the generator to pick it up correctly!
 
+## Breaking change in this fork's v2.0.0<!-- omit from toc -->
+
+The generator binary is now named `zod-prisma-schemas`, matching the package name.
+Update the provider in your schema:
+
+```prisma
+generator zod {
+  provider = "zod-prisma-schemas" // was "zod-prisma-types"
+}
+```
+
+The sections below describe breaking changes inherited from upstream `zod-prisma-types`.
+
 ## Breaking changes in v2.x.x<!-- omit from toc -->
 
 Be aware that some generator options have been removed, a few new ones have been added, the behavior of custom imports has changed and ts-morph is no longer needed to generate files in v2.0.0.
@@ -135,7 +148,7 @@ Add the following code to your `schema.prisma` file:
 
 ```prisma
 generator zod {
-  provider       = "zod-prisma-types"
+  provider       = "zod-prisma-schemas"
 }
 ```
 
@@ -151,11 +164,11 @@ Then import the schema's into your file:
 import { mySchema } from '/prisma/generated/zod'; // All schemas are here by default, use the 'output' option to change it
 ```
 
-> If you encounter errors like the following `/bin/sh: zod-prisma-types: command not found` please try to use the `npx` command with the `zod-prisma-types` command.
+> If you encounter errors like the following `/bin/sh: zod-prisma-schemas: command not found` please try to use the `npx` command with the `zod-prisma-schemas` command.
 
 ```prisma
 generator zod {
-  provider       = "npx zod-prisma-types"
+  provider       = "npx zod-prisma-schemas"
 }
 ```
 
@@ -773,7 +786,7 @@ This may look a bit cryptic so here is an example:
 
 ```prisma
 generator zod {
-  provider       = "zod-prisma-types"
+  provider       = "zod-prisma-schemas"
   output         = "./zod"
 }
 
@@ -1496,12 +1509,12 @@ The validator is extracted from the comments and added to the string
 
 ## Migration from `zod-prisma`
 
-There are a few differences between `zod-prisma` and `zod-prisma-types`.
-The following sections should help you migrate from `zod-prisma` to `zod-prisma-types`.
+There are a few differences between `zod-prisma` and `zod-prisma-schemas`.
+The following sections should help you migrate from `zod-prisma` to `zod-prisma-schemas`.
 
 ### Generator options
 
-The following generator options from `zod-prisma` are not supported or implemented differently by `zod-prisma-types`:
+The following generator options from `zod-prisma` are not supported or implemented differently by `zod-prisma-schemas`:
 
 #### `relationModel`
 
@@ -1522,23 +1535,23 @@ The casing of the model is fixed to the casing used in the `prisma schema` and c
 
 #### `modelSuffix`
 
-The model suffix in `zod-prisma-types` is fixed to `Schema` and can not be changed.
+The model suffix in `zod-prisma-schemas` is fixed to `Schema` and can not be changed.
 
 #### `useDecimalJs`
 
-`zod-prisma-types` does not support `decimal.js` but uses the decimal implementation provided by prisma to validate Decimal types. See [Decimal](#decimal) for more information.
+`zod-prisma-schemas` does not support `decimal.js` but uses the decimal implementation provided by prisma to validate Decimal types. See [Decimal](#decimal) for more information.
 
 #### `imports`
 
-As of version `2.0.0` imports in `zod-prisma-types` are handled with rich-comments on the model definition. See [Custom imports](#custom-imports) for more information.
+As of version `2.0.0` imports in `zod-prisma-schemas` are handled with rich-comments on the model definition. See [Custom imports](#custom-imports) for more information.
 
 #### `prismaJsonNullability`
 
-The nullablility in `zod-prisma-types` is handled differently. See [Json null values](#json-null-values) for more information.
+The nullablility in `zod-prisma-schemas` is handled differently. See [Json null values](#json-null-values) for more information.
 
 ### Extending zod fields
 
-`zod-prisma` allows you to extend the zod fields with custom validators. This is also possible with `zod-prisma-types` and the `@zod.[key].[validator]` syntax. The different syntax is used to check if a validator can be used on a specific prisma type. See [Field validators](#field-validators) for more information.
+`zod-prisma` allows you to extend the zod fields with custom validators. This is also possible with `zod-prisma-schemas` and the `@zod.[key].[validator]` syntax. The different syntax is used to check if a validator can be used on a specific prisma type. See [Field validators](#field-validators) for more information.
 
 ```prisma
 
@@ -1548,7 +1561,7 @@ model MyModel {
   number Number /// @zod.min(3) -> valid - throws error only at runtime
 }
 
-//zod-prisma-types
+//zod-prisma-schemas
 model MyModel {
   string String /// @zod.string.min(3) -> valid - `string` can be used on `String`
   number Number /// @zod.string.min(3) -> invalid - throws error during generation
