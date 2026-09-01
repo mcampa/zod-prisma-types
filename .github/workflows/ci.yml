@@ -11,8 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
-        node-version: [18.x, 20.x, 22.x, 24.x]
+        # Prisma 7 requires Node 20.19+ / 22.12+ / 24+, and its installer refuses
+        # to run on anything older.
+        node-version: [20.x, 22.x, 24.x]
 
     steps:
       - name: Checkout code
@@ -32,14 +35,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run tests in packages/generator
-        run: pnpm --filter zod-prisma-types test
+      - name: Run unit tests
+        run: pnpm vitest run
+
+      - name: Run e2e tests
+        run: pnpm test:e2e
 
       - name: Run linting
-        run: pnpm --filter zod-prisma-types lint
+        run: pnpm lint:check
 
-      - name: Run generator in usage package
-        run: pnpm --filter usage gen:prisma
-
-      - name: compile usage package
-        run: pnpm --filter usage tsc
+      - name: Build
+        run: pnpm build

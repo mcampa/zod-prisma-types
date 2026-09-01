@@ -1,0 +1,73 @@
+// e2e fixture: every scalar type, both nullable and list variants, plus rich
+// comment validators and a custom import. Generated with all generator options
+// left at their defaults so the widest set of writers runs.
+
+generator client {
+  provider       = "prisma-client"
+  output         = "../.generated/full/client"
+  moduleFormat   = "cjs"
+  runtime        = "nodejs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator zod {
+  provider         = "node ../../dist/bin.js"
+  output           = "../.generated/full/zod"
+  prismaClientPath = "../client/client"
+}
+
+/// @zod.import(["import { isValidName } from '../../../fixtures/myValidators';"])
+model AllScalars {
+  id           Int      @id @default(autoincrement())
+  string       String   /// @zod.string.min(1, { message: "min error" }).max(100)
+  stringOpt    String?
+  stringList   String[]
+  boolean      Boolean
+  booleanOpt   Boolean?
+  int          Int      /// @zod.number.gt(0)
+  intOpt       Int?
+  bigInt       BigInt
+  bigIntOpt    BigInt?
+  float        Float
+  floatOpt     Float?
+  decimal      Decimal
+  decimalOpt   Decimal?
+  decimalList  Decimal[]
+  date         DateTime
+  dateOpt      DateTime?
+  json         Json
+  jsonOpt      Json?
+  // Bytes is the regression guard: a version-gated writer used to emit nothing
+  // for Prisma 7, producing `bytesOpt: .nullable()` — invalid TypeScript.
+  bytes        Bytes
+  bytesOpt     Bytes?
+  bytesList    Bytes[]
+  enumField    Role     @default(USER)
+  enumOpt      Role?
+  custom       String?  /// @zod.custom.use(z.string().refine((v) => isValidName(v)))
+  omitted      String?  /// @zod.custom.omit(["model", "input"])
+
+  posts    Post[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([string])
+}
+
+model Post {
+  id       Int    @id @default(autoincrement())
+  title    String
+  authorId Int
+
+  author AllScalars @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@unique([authorId, title])
+}
+
+enum Role {
+  USER
+  ADMIN
+}

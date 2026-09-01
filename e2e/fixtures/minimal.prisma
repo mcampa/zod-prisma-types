@@ -1,0 +1,42 @@
+// e2e fixture mirroring how the generator is configured in a real consumer:
+// model schemas only, no input types, no select/include. Exercises the
+// opposite branch of most `if (config.x)` checks in the writers.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../.generated/minimal/client"
+  moduleFormat = "cjs"
+  runtime      = "nodejs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator zod {
+  provider                 = "node ../../dist/bin.js"
+  output                   = "../.generated/minimal/zod"
+  prismaClientPath         = "../client/client"
+  createInputTypes         = false
+  addInputTypeValidation   = false
+  addIncludeType           = false
+  addSelectType            = false
+  validateWhereUniqueInput = false
+  coerceDate               = true
+}
+
+model Merchant {
+  id        String    @id @default(cuid())
+  name      String?
+  status    Status    @default(PENDING)
+  feeRate   Decimal   @db.Decimal(5, 4)
+  metadata  Json      @default("{}")
+  payload   Bytes?
+  createdAt DateTime  @default(now())
+  settledAt DateTime?
+}
+
+enum Status {
+  PENDING
+  ACTIVE
+}

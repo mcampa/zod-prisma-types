@@ -1,0 +1,26 @@
+// e2e fixture for the version-gated writers. Generated with an older
+// `@prisma/client` version declared in the work directory's package.json, which
+// is how the generator decides which branch to emit (see getPackageVersion).
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../.generated/legacy/client"
+  moduleFormat = "cjs"
+  runtime      = "nodejs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator zod {
+  provider         = "node ../../dist/bin.js"
+  output           = "../.generated/legacy/zod"
+  prismaClientPath = "../client/client"
+}
+
+model Blob {
+  id       Int    @id @default(autoincrement())
+  bytes    Bytes
+  bytesOpt Bytes?
+}
