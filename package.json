@@ -1,6 +1,6 @@
 {
   "name": "zod-prisma-schemas",
-  "version": "1.0.4",
+  "version": "2.0.0",
   "description": "Generates zod schemas from Prisma models with advanced validation (Fork of zod-prisma-types)",
   "author": "Mario Campa",
   "license": "MIT",
@@ -28,13 +28,14 @@
     "url": "https://github.com/mcampa/zod-prisma-types.git"
   },
   "bin": {
-    "zod-prisma-types": "dist/bin.js"
+    "zod-prisma-schemas": "dist/bin.js"
   },
   "scripts": {
     "lint": "eslint --ext ts,tsx,js,jsx --fix .",
     "lint:check": "eslint --ext ts,tsx,js,jsx .",
     "test": "vitest",
     "build": "tsc",
+    "prepack": "pnpm build",
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
     "test:e2e": "pnpm build && vitest run --config vite.e2e.config.mts"
   },
