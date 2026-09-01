@@ -4,6 +4,9 @@
   "description": "Generates zod schemas from Prisma models with advanced validation (Fork of zod-prisma-types)",
   "author": "Mario Campa",
   "license": "MIT",
+  "engines": {
+    "node": ">=20.19"
+  },
   "packageManager": "pnpm@10.17.1",
   "main": "dist/generator.js",
   "types": "dist/generator.d.ts",
