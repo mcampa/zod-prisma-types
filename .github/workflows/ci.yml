@@ -11,8 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
-        node-version: [18.x, 20.x, 22.x, 24.x]
+        # Prisma 7 requires Node 20.19+ / 22.12+ / 24+, and its installer refuses
+        # to run on anything older.
+        node-version: [20.x, 22.x, 24.x]
 
     steps:
       - name: Checkout code
